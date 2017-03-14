@@ -1,9 +1,7 @@
-### Phase 3 - Architectural Design
-Android implementation of the GIS module for COS 301 Software Engineering NavUP system.
+## Phase 3 - Architectural Design
+### Android implementation of the GIS module for COS 301 Software Engineering NavUP system.
 ---
-
-### Longsword GIS - (Android)
-> Architectural Requirements Specifications and Design for the NavUP System
+## Longsword GIS - (Android)
 
 ### Team Members
 - Boikanyo Modiko
