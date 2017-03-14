@@ -1,4 +1,4 @@
-#Phase 3 - Architectural Design
+### Phase 3 - Architectural Design
 Android implementation of the GIS module for COS 301 Software Engineering NavUP system.
 ---
 
