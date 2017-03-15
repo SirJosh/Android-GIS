@@ -13,6 +13,7 @@
 * Our Slack Team: https://android-gis.slack.com.
 
 * <b>MagicDraw</b> (UML Tool) https://www.nomagic.com/products/magicdraw NOTE: The keycode is available on the CS site.
+* <b>Draw.io</b> (Online UML Tool) https://www.draw.io/ 
 
 * If you don't have a LaTex editor, www.sharelatex.com is a good online substitute.
 
