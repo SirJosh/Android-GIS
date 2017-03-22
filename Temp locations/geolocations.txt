@@ -1,0 +1,6 @@
+Humanities Building  							-25.7554519, 28.2310199
+Centenary Building  			 				-25.7552513, 28.2306343
+Information Technology Building 				-25.7556415, 28.2319014
+Client Service Centre 							-25.7556689, 28.2312997
+Theology Building								-25.7550951, 28.229788
+Economic and Management Sciences Building		-25.7556051, 28.2310267
