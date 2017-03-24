@@ -14,3 +14,9 @@ VALUES (NULL, 'Humanities', '-25.7554519', '28.2310199'),
 (NULL, 'Client Service Centre', '-25.7556689', '28.2312997'),
 (NULL, 'Centenary ', '-25.7550951', '28.229788'),
 (NULL, 'Centenary ', '-25.7556051', '28.2310267');
+
+/****************** Update entries*******************/
+UPDATE `eyetalix_testing`.`geolocations` SET `longitude` = '28.23101992' WHERE `geolocations`.`id` = 1;
+
+/****************** Delete entries*******************/
+DELETE FROM `eyetalix_testing`.`geolocations` WHERE `geolocations`.`id` = 2;
