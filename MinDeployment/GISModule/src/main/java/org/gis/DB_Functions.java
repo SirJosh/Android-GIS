@@ -131,62 +131,172 @@ public class DB_Functions
     }
 
 //     UPDATE
-    public void UpdateBuilding(String buildingName)
+    public void UpdateBuildingName(String buildingName, String newName)
     {
         Connection c = null;
         Statement stmt = null;
-        try
-        {
+        try {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/navup","postgres", "password");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                            "manisha", "123");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql = "UPDATE COMPANY set SALARY = 25000.00 where ID=1;";
+            String sql = "UPDATE Buidings " +
+                    "SET name = "+newName+"\n" +
+                    "WHERE name = "+buildingName+";";
+
+
             stmt.executeUpdate(sql);
             c.commit();
 
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM COMPANY;" );
-            while ( rs.next() )
-            {
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM Buidings;" );
+            while ( rs.next() ) {
                 int id = rs.getInt("id");
                 String  name = rs.getString("name");
-                int age  = rs.getInt("age");
-                String  address = rs.getString("address");
-                float salary = rs.getFloat("salary");
+                double latitude  = rs.getDouble("age");
+                double longitude = rs.getDouble("address");
+                int level = rs.getInt("level");
                 System.out.println( "ID = " + id );
                 System.out.println( "NAME = " + name );
-                System.out.println( "AGE = " + age );
-                System.out.println( "ADDRESS = " + address );
-                System.out.println( "SALARY = " + salary + "\n");
+                System.out.println( "LATITUDE = " + latitude );
+                System.out.println( "LONGITUDE = " + longitude );
+                System.out.println( "LEVEL = " + level );
+                System.out.println();
             }
             rs.close();
             stmt.close();
             c.close();
-        }
-        catch ( Exception e )
-        {
+        } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
         System.out.println("Operation done successfully");
     }
 
-    public void UpdateBuildingRoom(String buildingName, String buildingRoom)
+    public void UpdateBuildingLatitude(String buildingName, double latitude)
     {
 
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                            "manisha", "123");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+            String sql = "UPDATE Buidings " + 
+                    "SET latitude = "+latitude+"\n" +
+                    "WHERE name ="+buildingName+";";
+
+            stmt.executeUpdate(sql);
+            c.commit();
+            
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
     }
 
-    public void UpdateBuildingCoordinates(double latitude, double logitude)
+    public void UpdateBuildingLongitude(String buildingName, double longitude)
     {
 
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                            "manisha", "123");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+            String sql = "UPDATE Buidings " +
+                    "SET longitude = "+longitude+"\n" +
+                    "WHERE name ="+buildingName+";";
+
+            stmt.executeUpdate(sql);
+            c.commit();
+
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
     }
 
-    public void UpdateBuildingRoomCoordinates(double latitude, double lonitude)
+    public void UpdateRoomLevel(String buildingName, String room_name, int level)
     {
 
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                            "manisha", "123");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+            String sql = "UPDATE " + buildingName + //The building name is the name of the table
+                    "SET level =" +level+"\n" + //Update the level of the room
+                    "WHERE room_name ="+room_name+";"; //Search according to room name
+
+            stmt.executeUpdate(sql);
+            c.commit();
+
+        
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
     }
+
+    public void UpdateRoomName(String buildingName, String room_name, String newName)
+    {
+        Connection c = null;
+        Statement stmt = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                            "manisha", "123");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+            String sql = "UPDATE " + buildingName + //The building name is the name of the table
+                    "SET room_name =" +newName+"\n" + //Update the level of the room
+                    "WHERE room_name ="+room_name+";"; //Search according to room name
+
+
+            stmt.executeUpdate(sql);
+            c.commit();
+            
+            stmt.close();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+    }
+
 
 //    DELETE
     public void DeleteBuilding()
