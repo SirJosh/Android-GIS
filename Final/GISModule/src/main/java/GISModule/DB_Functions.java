@@ -1,15 +1,11 @@
 package GISModule;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-
 
 // Josh - 4
 // Bk - 3
@@ -183,10 +179,7 @@ public class DB_Functions
      */
     public String listBuildings()
     {
-        Gson g = new Gson();
-        String json = "";
-        Building b =  null;
-
+        // Connection
         Connection c = null;
         Statement stmt = null;
 
@@ -211,9 +204,8 @@ public class DB_Functions
                 Double lon = rs.getDouble("longitude");
                 String descr = rs.getString("description");
 
-                b = new Building(id, bName, lon, lat, descr);
-
-                b.buildingVector.add(b);
+                Building b = new Building(id, bName, lon, lat, descr);
+                Building.buildingVector.add(b);
             }
 
             rs.close();
@@ -229,9 +221,10 @@ public class DB_Functions
 
         System.out.println("Search for All building done successfully");
 
-        json = g.toJson(b.buildingVector);
+        // Create the json array from the vector
+        Gson jsonObj = new Gson();
 
-        return json.toString();
+        return jsonObj.toJson(Building.buildingVector);
     }
 
     /**
@@ -251,16 +244,14 @@ public class DB_Functions
      */
     public String listRoomNames(String jsonString)
     {
-        Gson g = new Gson();
-        JsonObject jsonObject = (new JsonParser()).parse(jsonString).getAsJsonObject();
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-        String json = "";
+        String buildingNameSearch = buildingObj.getName();
+        String tableBuilding = buildingObj.buildingsMap.get(buildingNameSearch);
 
-        String buildingName = jsonString;
-
-        Building b = new Building();
-        String build = b.buildingsMap.get(buildingName);
-
+        // Connection
         Connection c = null;
         Statement stmt = null;
 
@@ -273,7 +264,7 @@ public class DB_Functions
 
             stmt = c.createStatement();
 
-            String sql = "SELECT * FROM public." + build;
+            String sql = "SELECT * FROM public." + tableBuilding;
 
             ResultSet rs = stmt.executeQuery( sql);
 
@@ -287,7 +278,7 @@ public class DB_Functions
                 int build_id = rs.getInt("build_id");
 
                 Room rm = new Room(id, rName, lvl, lonn, latt, build_id);
-                json += g.toJson(rm) + ",";
+                Room.roomVector.add(rm);
             }
 
             rs.close();
@@ -302,7 +293,9 @@ public class DB_Functions
         }
 
         System.out.println("Search for All rooms in a building done successfully");
-        return json;
+
+        // Create the json array from the vector
+        return jsonObj.toJson(Room.roomVector);
     }
 
 
@@ -320,10 +313,14 @@ public class DB_Functions
      */
     public String getBuildingByName(String jsonString)
     {
-        Gson j = new Gson();
-        String jsonSt = "";
-        String buildingName = "";
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
+        String buildingNameSearch = buildingObj.getName();
+        String returnJsonString = "";
+
+        // Connection
         Connection c = null;
         Statement stmt = null;
 
@@ -336,7 +333,7 @@ public class DB_Functions
 
             stmt = c.createStatement();
 
-            String sql = "SELECT * FROM PUBLIC.buildings WHERE name = " + "'" + buildingName + "'";
+            String sql = "SELECT * FROM PUBLIC.buildings WHERE name = " + "'" + buildingNameSearch + "'";
 
             ResultSet rs = stmt.executeQuery( sql);
 
@@ -349,7 +346,7 @@ public class DB_Functions
                 String descr = rs.getString("description");
 
                 Building b = new Building(id, bName, lon, lat, descr);
-                jsonSt = j.toJson(b);
+                returnJsonString = jsonObj.toJson(b);
             }
 
             rs.close();
@@ -362,9 +359,10 @@ public class DB_Functions
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
+
         System.out.println("Search for building by name done successfully");
 
-        return jsonSt;
+        return returnJsonString;
     }
 
     /**
@@ -383,6 +381,7 @@ public class DB_Functions
      */
     public String getBuildingByCoordinates(String jsonString)
     {
+        // TODO Where I will start again
         Gson g = new Gson();
         String jsonS = "";
         Double lat = 0.0, lon = 0.0;
