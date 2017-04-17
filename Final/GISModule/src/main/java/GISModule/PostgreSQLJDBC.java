@@ -17,7 +17,7 @@ public class PostgreSQLJDBC
 
             DB_Functions ex = new DB_Functions();
 
-            // LIST ALL Buildings
+            // LIST ALL BUILDINGS
             System.out.println(ex.listBuildings() + "\n");
 
             // SEARCH FOR ROOMS IN BUILDING
@@ -28,9 +28,9 @@ public class PostgreSQLJDBC
             String ITBuildSearch = "{\"name\":\"Engineering 1\"}";
             System.out.println(ex.getBuildingByName(ITBuildSearch));
 
+            // GET BUILDING BY COORDINATES
+            System.out.println(ex.getBuildingByCoordinates("{\"longitude\":-25.755641,\"latitude\":28.231901}") + "\n");
 
-
-//            System.out.println(ex.SearchByBuildingByCoordinates(28.2319, -25.7556) + "\n");
 //            System.out.println(ex.SearchByRoomNumber("IT Building", "IT 4-5") + "\n");
 //            System.out.println(ex.GetAllRoomsInBuilding("EMB Building"));
 

@@ -42,7 +42,9 @@ public class DB_Functions
      */
     public void insertBuilding(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -62,6 +64,9 @@ public class DB_Functions
      */
     public void insertBuildingRoom(String jsonString)
     {
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
     }
 
@@ -79,7 +84,9 @@ public class DB_Functions
      */
     public void updateBuildingName(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -97,7 +104,9 @@ public class DB_Functions
      */
     public void updateBuildingRoom(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -115,6 +124,9 @@ public class DB_Functions
      */
     public void updateBuildingCoordinates(String jsonString)
     {
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -133,7 +145,9 @@ public class DB_Functions
      */
     public void UpdateBuildingRoomCoordinates(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -148,7 +162,9 @@ public class DB_Functions
      */
     public void removeBuilding(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -165,7 +181,9 @@ public class DB_Functions
      */
     public void removeBuildingRoom(String jsonString)
     {
-
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
     }
 
     /**
@@ -182,6 +200,10 @@ public class DB_Functions
         // Connection
         Connection c = null;
         Statement stmt = null;
+
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
         try
         {
@@ -250,6 +272,10 @@ public class DB_Functions
 
         String buildingNameSearch = buildingObj.getName();
         String tableBuilding = buildingObj.buildingsMap.get(buildingNameSearch);
+
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
         // Connection
         Connection c = null;
@@ -320,6 +346,10 @@ public class DB_Functions
         String buildingNameSearch = buildingObj.getName();
         String returnJsonString = "";
 
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
+
         // Connection
         Connection c = null;
         Statement stmt = null;
@@ -381,10 +411,18 @@ public class DB_Functions
      */
     public String getBuildingByCoordinates(String jsonString)
     {
-        // TODO Where I will start again
-        Gson g = new Gson();
-        String jsonS = "";
-        Double lat = 0.0, lon = 0.0;
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Building b = new Building();
+
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
+
+        int count = -1;
+
+        Double lat = buildingObj.getLatitude(), lon = buildingObj.getLongitude();
 
         Connection c = null;
         Statement stmt = null;
@@ -402,7 +440,8 @@ public class DB_Functions
                          "WHERE latitude::text LIKE " + "'" + lat + "%'" +
                          "AND longitude::text LIKE " + "'" + lon + "%'";
 
-            ResultSet rs = stmt.executeQuery( sql);
+            ResultSet rs = stmt.executeQuery(sql);
+            count = rs.getFetchSize();
 
             while (rs.next())
             {
@@ -412,8 +451,29 @@ public class DB_Functions
                 Double lonn = rs.getDouble("longitude");
                 String descr = rs.getString("description");
 
-                Building bC = new Building(id, bName, lonn, latt, descr);
-                jsonS += g.toJson(bC) + ",";
+                if (count > 0)
+                {
+                    Building tempB = new Building(id, bName, lon, lat, descr);
+                    // Add to array
+                    Building.buildingVector.add(tempB);
+
+                }
+                else
+                {
+                    if(count == 0)
+                    {
+                        Building tempB = new Building(id, bName, lon, lat, descr);
+                        Building.buildingVector.add(tempB);
+                    }
+
+                    b.setId(id);
+                    b.setName(bName);
+                    b.setLatitude(latt);
+                    b.setLongitude(lonn);
+                    b.setDescription(descr);
+                }
+
+                count++;
             }
 
             rs.close();
@@ -428,7 +488,15 @@ public class DB_Functions
         }
 
         System.out.println("Search for building by coordinates done successfully");
-        return jsonS;
+
+        if(count > -1)
+        {
+            return jsonObj.toJson(Building.buildingVector);
+        }
+        else
+        {
+            return jsonObj.toJson(b);
+        }
     }
 
     /**
@@ -456,6 +524,11 @@ public class DB_Functions
 
         Connection c = null;
         Statement stmt = null;
+
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
+
         String buildingName = null;
         String room = null;
 
@@ -522,6 +595,10 @@ public class DB_Functions
      */
     public String getRoutes(String jsonString)
     {
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
+
         return "";
     }
 }

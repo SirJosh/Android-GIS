@@ -56,6 +56,6 @@ public class Building
     public void setLatitude(double latitude_) {latitude = latitude_;}
 
     public double getLongitude() {return longitude;}
-    public void setongitude(double longitude_) {longitude = longitude_;}
+    public void setLongitude(double longitude_) {longitude = longitude_;}
 
 }

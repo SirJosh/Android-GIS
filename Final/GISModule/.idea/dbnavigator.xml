@@ -26,13 +26,16 @@
     <loaded-nodes>
       <connection connection-id="93fc660c-7d19-4d0a-8b97-5fd579913802">
         <schema name="information_schema" object-types="function, sequence, table, view" />
+        <schema name="pg_catalog" object-types="function" />
         <schema name="public" object-types="column, constraint, function, index, sequence, table, dataset trigger, view" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="93fc660c-7d19-4d0a-8b97-5fd579913802">
-      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".buildings]]></console>
+      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".buildings
+
+SELECT * FROM public.buildings WHERE latitude::text LIKE '28.231%' AND longitude::text LIKE '-25.755%']]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
