@@ -205,9 +205,56 @@ public class DB_Functions
      */
     public void updateBuildingName(String jsonString)
     {
-        // Clear Vectors
-        Building.buildingVector.clear();
-        Room.roomVector.clear();
+                        // Clear Vectors
+                        Building.buildingVector.clear();
+                        Room.roomVector.clear();
+
+                        Gson jsonObj = new Gson();
+                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
+                        String buildingName = buildingObj.getName();
+                        String[] names = gson.fromJson(jsonString,String[].class);
+
+                        String table = names[0];
+                        String originalRoom = names[1];
+                        String changeName = names[2];
+
+
+
+
+                        // Connection
+                        Connection c = null;
+                        Statement stmt = null;
+
+                        try
+                        {
+                            Class.forName("org.postgresql.Driver");
+                            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+                            c.setAutoCommit(false);
+                            System.out.println("Opened database successfully");
+
+                            stmt = c.createStatement();
+
+                            /*String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =")
+                                    .append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
+                            //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.*/
+
+                            String sql = "UPDATE public."+table+"SET name ="+"'"+changeName+"'"+
+                                    "WHERE name = "+originalRoom;
+
+                            ResultSet rs = stmt.executeQuery( sql);
+
+                            rs.close();
+                            stmt.close();
+                            c.close();
+
+                        }
+                        catch ( Exception e )
+                        {
+                            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+                            System.exit(0);
+                        }
+
     }
 
     /**
