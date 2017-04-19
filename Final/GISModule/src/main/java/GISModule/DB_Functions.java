@@ -119,9 +119,75 @@ public class DB_Functions
      */
     public void insertBuildingRoom(String jsonString)
     {
-        // Clear Vectors
-        Building.buildingVector.clear();
-        Room.roomVector.clear();
+                        //String s = String.format("string1%sI am a string", jsonString);--another way to apeend strings if the one I used does not work
+
+                        //connection
+                        Connection con = null;
+                        PreparedStatement stmt = null;
+                        String url = "jdbc:postgresql://localhost:10000/tempnavup";
+                        String user = "postgres";
+                        String password = "password";
+
+                        // JSON Conversion
+                        Gson jsonObj = new Gson();
+                        Gson jsonObj2 = new Gson();
+                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+                        Room roomObj = jsonObj.fromJson(jsonString, Room.class);
+
+                        Building b = new Building();
+
+                        String buildingNameSearch = buildingObj.getName();
+                        String room = roomObj.getRoomName();
+                        int level = roomObj.getLevel();
+                        double lat = roomObj.getLatitude();
+                        double longi = roomObj.getLongitude();
+
+                        String build = b.buildingsMap.get(buildingNameSearch);
+
+                        // Clear Vectors
+                        Building.buildingVector.clear();
+                        Room.roomVector.clear();
+
+                        try {
+
+                            Class.forName("org.postgresql.Driver");
+                            con = DriverManager.getConnection(url,user,password);
+                            if(con == null) System.out.println("connection is junk");
+                            con.setAutoCommit(false);
+                            System.out.println("Opened database successfully");
+
+                            //stmt = c.createStatement();
+                            String sql;
+                            sql = new StringBuilder().append("INSERT INTO ").append(build).append(" (roomName,level,latitude,longitude) VALUES (?,?,?,?);").toString();
+                           // System.out.println("Done declaring sql");
+                            stmt = con.prepareStatement(sql);
+                            stmt.setString(1,room);
+                            stmt.setInt(1,level);
+                            stmt.setDouble(3,lat);
+                            stmt.setDouble(4,longi);
+
+
+
+                            stmt.executeUpdate();
+                            //System.out.println("Done inserting");
+
+                        } catch (Exception e) {
+                            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                            System.exit(0);
+
+
+                        } finally {
+                            try{
+                                if(stmt != null) stmt.close();
+                                if(con != null) con.close();
+                            } catch (Exception e){
+
+                                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                                System.exit(0);
+
+                            }
+                        }
+
 
     }
 
