@@ -28,7 +28,7 @@ CREATE TABLE EMB_building (
   level int NOT NULL,
   latitude double precision NOT NULL,
   longitude double precision NOT NULL,
-  build_id int references buildings(id)
+  build_id SERIAL int references buildings(id)
 );
 
 CREATE TABLE IT_building (
@@ -37,7 +37,7 @@ CREATE TABLE IT_building (
   level int NOT NULL,
   latitude double precision NOT NULL,
   longitude double precision NOT NULL,
-  build_id int references buildings(id)
+  build_id SERIAL int references buildings(id)
 );
 
 INSERT INTO buildings (id, name, latitude, longitude, description)
