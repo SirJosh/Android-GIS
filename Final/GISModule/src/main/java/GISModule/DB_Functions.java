@@ -457,6 +457,38 @@ String buildingName=buildingObj.getName();
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        String buildingName = buildingObj.getName();
+        String tableBuilding = buildingObj.buildingsMap.get(buildingName);
+        Connection c = null;
+        Statement stmt = null;
+
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+            String sql1="DROP table "+tableBuilding+";"+"DELETE from public.buildings " + "WHERE name = "+buildingName;
+            ResultSet rs=stmt.executeQuery(sql1);
+            /*String sql = "DELETE from public.buildings " +
+                    "WHERE name = "+buildingName;
+
+
+            ResultSet rs = stmt.executeQuery( sql);*/
+
+            rs.close();
+            stmt.close();
+            c.close();
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
     }
 
     /**
