@@ -958,9 +958,72 @@ public class DB_Functions
      */
     public String getRoutes(String jsonString)
     {
+         String returnJsonString = "";
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
+
+      //  Gson jsonObj = new Gson();
+       // Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
+        double sLat;
+        double sLong;
+        double dLat;
+        double dLong;
+
+        // Connection
+        Connection c = null;
+        Statement stmt = null;
+
+        Gson jsonObj = new Gson();
+        String[] string = gson.fromJson(jsonString,String[].class);
+
+        sLat = Double.parseDouble(string[0]);
+        sLong = Double.parseDouble(string[1]);
+        dLat = Double.parseDouble(string[2]);
+        dLong = Double.parseDouble(string[3]);
+
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+
+            String sql = "SELECT * FROM PUBLIC.rooms WHERE longitude BETWEEN " + "'" + sLong + "' AND '"+dLong+"'"
+                    +"OR latitude BETWEEN " + "'" + sLat + "' AND '"+dLat+"'";
+
+            ResultSet rs = stmt.executeQuery( sql);
+
+            while ( rs.next() )
+            {
+                int id = rs.getInt("id");
+                String roomName = rs.getString("roomName");
+                int level = rs.getInt("level");
+                Double latitude = rs.getDouble("latitude");
+                Double longitude = rs.getDouble("longitude");
+                int build_id = rs.getInt("build_id");
+
+                Room b = new Room(id, roomName, level, latitude, longitude, build_id);
+                returnJsonString = jsonObj.toJson(b);
+            }
+
+            rs.close();
+            stmt.close();
+            c.close();
+
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+
+        System.out.println("Search for building by name done successfully");
+
+        return returnJsonString;
 
         return "";
     }
