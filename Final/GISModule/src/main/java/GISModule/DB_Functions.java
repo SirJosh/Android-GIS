@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 // Josh - 4
 // Bk - 3
-// Mambane - 4
+// Bongani - 4
 // Mfana - 3
 
 /**
@@ -27,7 +27,7 @@ import java.sql.Statement;
 public class DB_Functions
 {
     /**
-     * Mambane
+     * Bongani
      *
      * insertBuilding(buildingName, desc, lat, lon) - insert a new location
      *
@@ -42,13 +42,68 @@ public class DB_Functions
      */
     public void insertBuilding(String jsonString)
     {
-        // Clear Vectors
-        Building.buildingVector.clear();
-        Room.roomVector.clear();
+                        //connection
+                        Connection con = null;
+                        PreparedStatement stmt = null;
+                        String url = "jdbc:postgresql://localhost:10000/tempnavup";
+                        String user = "postgres";
+                        String password = "password";
+
+                        // JSON Conversion
+                        Gson jsonObj = new Gson();
+                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
+
+                        String buildingName = buildingObj.getName();
+                        String desc = buildingObj.getDescription();
+                        double lat = buildingObj.getLatitude();
+                        double longi = buildingObj.getLongitude();
+
+                        // Clear Vectors
+                        Building.buildingVector.clear();
+                        Room.roomVector.clear();
+
+                        try {
+
+                            Class.forName("org.postgresql.Driver");
+                            con = DriverManager.getConnection(url,user,password);
+                            if(con == null) System.out.println("connection is junk");
+                            con.setAutoCommit(false);
+                            //System.out.println("Opened database successfully");
+
+                            //stmt = c.createStatement();
+                            String sql = "INSERT INTO buildings (name,latitude,longitude,description) VALUES (?,?,?,?);";
+                            //System.out.println("Done declaring sql");
+                            stmt = con.prepareStatement(sql);
+                            stmt.setString(1,buildingName);
+                            stmt.setDouble(2,lat);
+                            stmt.setDouble(3,longi);
+                            stmt.setString(4,desc);
+
+
+                            stmt.executeUpdate();
+                            System.out.println("Done inserting");
+
+                        } catch (Exception e) {
+                            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                            System.exit(0);
+
+
+                        } finally {
+                            try{
+                                if(stmt != null) stmt.close();
+                                if(con != null) con.close();
+                            } catch (Exception e){
+
+                                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                                System.exit(0);
+
+                            }
+                        }
     }
 
     /**
-     * Mambane
+     * Bongani
      *
      * insertBuildingRoom(buildingName, room, desc, lat, lon) - insert a new location
      *
@@ -71,7 +126,7 @@ public class DB_Functions
     }
 
     /**
-     * Mambane
+     * Bongani
      *
      * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name
      *
@@ -90,7 +145,7 @@ public class DB_Functions
     }
 
     /**
-     * Mambane
+     * Bongani
      *
      * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name
      *
