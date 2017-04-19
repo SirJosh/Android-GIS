@@ -124,9 +124,49 @@ public class DB_Functions
      */
     public void updateBuildingCoordinates(String jsonString)
     {
-        // Clear Vectors
+         Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
+
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
+        String buildingName = buildingObj.getName();
+        double latitude = buildingObj.getLatitude();
+        double longitude = buildingObj.getLongitude();
+
+        // Connection
+        Connection c = null;
+        Statement stmt = null;
+
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+
+            String sql = "UPDATE public.buildings " +
+                        "SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
+                        "WHERE name = "+buildingName;
+
+            ResultSet rs = stmt.executeQuery( sql);
+
+            rs.close();
+            stmt.close();
+            c.close();
+
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+
+        System.out.println("Search for All rooms in a building done successfully");
+
     }
 
     /**
