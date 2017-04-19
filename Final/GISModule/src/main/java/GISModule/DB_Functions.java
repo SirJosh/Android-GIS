@@ -405,6 +405,41 @@ public class DB_Functions
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
+         Gson jsonObj =new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Room roomObj =jsonObj.fromJson(jsonString,Room.class);
+String buildingName=buildingObj.getName();
+        String roomname=roomObj.getRoomName();
+        double latitude = roomObj.getLatitude();
+        double longitude = roomObj.getLongitude();
+        String tableBuilding = buildingObj.buildingsMap.get(buildingName);
+        Connection c = null;
+        Statement stmt = null;
+
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            stmt = c.createStatement();
+
+            String sql = "UPDATE public."+tableBuilding  +
+                    " SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
+                    "WHERE name = "+roomname;
+
+            ResultSet rs = stmt.executeQuery( sql);
+
+            rs.close();
+            stmt.close();
+            c.close();
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
     }
 
     /**
