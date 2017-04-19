@@ -3,6 +3,9 @@ package GISModule;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * Main class for testing our Database functions
+ */
 public class PostgreSQLJDBC
 {
     public static void main(String args[])

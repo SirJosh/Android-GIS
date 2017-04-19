@@ -1,25 +1,21 @@
 package GISModule;
 
 import com.google.gson.Gson;
-
 import java.sql.*;
-
-// Josh - 4
-// Bk - 3
-// Bongani - 4
-// Mfana - 3
 
 /**
  * The DB_Functions class provides the necessary functions for interaction
  * between other modules and the GIS module.
  *
- * Refer to documentation for building name and room name conventions
+ * Refer to the building and room class for building name and room name conventions.
+ *
+ * Gson is used for all our JSON conversions, check pom.xml for maven dependencies.
  *
  * @author  GIS - Team Longsword
  * @version 5.0
- * @since   3.0 11-04-2017
- * @since   4.0 16-04-2017
- * @since   5.0 16-04-2017
+ * @since   3.0 : 11-04-2017
+ * @since   4.0 : 16-04-2017
+ * @since   5.0 : 19-04-2017
  */
 
 public class DB_Functions
@@ -33,9 +29,9 @@ public class DB_Functions
 
     /**
      * Bongani:
-     * insertBuilding(buildingName, desc, lat, lon) - insert a new location
+     * insertBuilding(buildingName, desc, lat, lon) - insert a new location.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
      * desc         Building and room description / purpose
@@ -115,10 +111,9 @@ public class DB_Functions
 
     /**
      * Bongani:
+     * insertBuildingRoom(buildingName, room, desc, lat, lon, level) - insert a new location.
      *
-     * insertBuildingRoom(buildingName, room, desc, lat, lon, level) - insert a new location
-     *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
      * room         Room number in the form of "IT 4-1" or "EMB 2-151"
@@ -202,13 +197,12 @@ public class DB_Functions
 
     /**
      * Bongani:
+     * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name.
      *
-     * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * oldBuildingName Old building name of location e.g. IT Building
-     * newBuildingName New building name of location e.g. Information Technology Building
+     * oldBuildingName: Old building name of location e.g. IT Building.
+     * newBuildingName:  New building name of location e.g. Information Technology Building.
      *
      * @param jsonString JSON String with above parameters
      */
@@ -264,14 +258,13 @@ public class DB_Functions
 
     /**
      * Bongani:
+     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name.
      *
-     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location to edit e.g. IT Building
-     * oldRoom      Old room number in the form of "IT 4-1" or "EMB 2-151"
-     * newRoom      New room number in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location to edit e.g. IT Building.
+     * oldRoom:      Old room number in the form of "IT 4-1" or "EMB 2-151".
+     * newRoom:      New room number in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      */
@@ -328,13 +321,13 @@ public class DB_Functions
 
     /**
      * BK:
-     * updateBuildingCoordinates(buildingName, lat, lon) - update coordinates of a location
+     * updateBuildingCoordinates(buildingName, lat, lon) - update coordinates of a location.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
-     * lat          New latitude of location
-     * lon          New longitude of location
+     * buildingName: Building name of location e.g. IT Building.
+     * lat:          New latitude of location.
+     * lon:          New longitude of location.
      *
      * @param jsonString JSON String with above parameters
      */
@@ -385,14 +378,14 @@ public class DB_Functions
 
     /**
      * Mfana:
-     * updateBuildingRoomCoordinates(buildingName, room, lat, lon) - update coordinates of a location
+     * updateBuildingRoomCoordinates(buildingName, room, lat, lon) - update coordinates of a location.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number to edit in the form of "IT 4-1" or "EMB 2-151"
-     * lat          New latitude of location
-     * lon          New longitude of location
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number to edit in the form of "IT 4-1" or "EMB 2-151".
+     * lat:          New latitude of location.
+     * lon:          New longitude of location.
      *
      * @param jsonString JSON String with above parameters
      */
@@ -446,11 +439,11 @@ public class DB_Functions
 
     /**
      * Mfana:
-     * removeBuilding(buildingName) - remove an existing location
+     * removeBuilding(buildingName) - remove an existing location.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      */
@@ -497,12 +490,12 @@ public class DB_Functions
 
     /**
      * Mfana:
-     * removeBuildingRoom(buildingName, room) - remove an existing locations room
+     * removeBuildingRoom(buildingName, room) - remove an existing locations room.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number to remove in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number to remove in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      */
@@ -553,9 +546,9 @@ public class DB_Functions
 
     /**
      * Joshua
-     * listBuildings() - returns all the buildings available on main campus
+     * listBuildings() - returns all the buildings available on main campus.
      *
-     * Uses class Building to create the JSON objects
+     * Uses class Building to create the JSON objects.
      *
      * @return JSON string array
      */
@@ -610,14 +603,14 @@ public class DB_Functions
 
     /**
      * Joshua:
-     * listRoomNames(buildingName) - returns all rooms available in the building, provided that that the building name is given
+     * listRoomNames(buildingName) - returns all rooms available in the building, provided that that the building name is given.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * Uses a HashMap to link the building name to a table name in the database,
-     * along with the class Room to create the JSON objects
+     * along with the class Room to create the JSON objects.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      *
@@ -684,11 +677,11 @@ public class DB_Functions
 
     /**
      * Joshua:
-     * getBuildingByName(buildingName) - gets all information regarding a specific building
+     * getBuildingByName(buildingName) - gets all information regarding a specific building.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      *
@@ -753,12 +746,12 @@ public class DB_Functions
 
     /**
      * Joshua:
-     * getBuildingByCoordinates(lat, lon) - get all information on a building based on the coordinates provided
+     * getBuildingByCoordinates(lat, lon) - get all information on a building based on the coordinates provided.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * lat Latitude of location
-     * lon Longitude of location
+     * lat: Latitude of location.
+     * lon: Longitude of location.
      *
      * @param jsonString JSON String with above parameters
      *
@@ -855,15 +848,15 @@ public class DB_Functions
 
     /**
      * Joshua:
-     * getLocationByRoomNumber(buildingName , room) - gets a location of a room by providing the building name and room
+     * getLocationByRoomNumber(buildingName , room) - gets a location of a room by providing the building name and room.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * Uses a HashMap to link the building name to a table name in the database,
-     * along with the class Room to create the JSON objects
+     * along with the class Room to create the JSON objects.
      *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      *
@@ -938,14 +931,14 @@ public class DB_Functions
 
     /**
      * BK:
-     * getRoutes(sLat, sLong, dLat, dLong) - provides all possible routes between a start and end point for a user
+     * getRoutes(sLat, sLong, dLat, dLong) - provides all possible routes between a start and end point for a user.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * sLat          Start latitude
-     * sLong         Start longitude
-     * dLat          Destination latitude
-     * dLong         Destination longitude
+     * sLat:          Start latitude
+     * sLong:         Start longitude
+     * dLat:          Destination latitude
+     * dLong:         Destination longitude
      *
      * @param jsonString JSON String with above parameters
      *

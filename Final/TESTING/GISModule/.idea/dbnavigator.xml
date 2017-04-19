@@ -33,9 +33,9 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="31dc5f88-190c-44a8-831f-7bd8478fecba">
-      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".it_building
+      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".emb_building
 
-select * from "public".buildings]]></console>
+select name from "public".buildings]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
