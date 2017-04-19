@@ -215,6 +215,75 @@ public class DB_Functions
                         String buildingName = buildingObj.getName();
                         String[] names = gson.fromJson(jsonString,String[].class);
 
+                        String originalRoom = names[0];
+                        String changeName = names[1];
+
+
+
+
+                        // Connection
+                        Connection c = null;
+                        Statement stmt = null;
+
+                        try
+                        {
+                            Class.forName("org.postgresql.Driver");
+                            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+                            c.setAutoCommit(false);
+                            System.out.println("Opened database successfully");
+
+                            stmt = c.createStatement();
+
+                            String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =")
+                                    .append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
+                                    //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.
+
+                           /* String sql = "UPDATE public.buildings " +
+                                    "SET name ="+"'"+changeName+"'"+
+                                    "WHERE name = "+originalRoom;*/
+
+                            ResultSet rs = stmt.executeQuery( sql);
+
+                            rs.close();
+                            stmt.close();
+                            c.close();
+
+                        }
+                        catch ( Exception e )
+                        {
+                            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+                            System.exit(0);
+                        }
+
+                        System.out.println("Search for All rooms in a building done successfully");
+
+    }
+
+    /**
+     * Bongani
+     *
+     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name
+     *
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     *
+     * buildingName Building name of location to edit e.g. IT Building
+     * oldRoom      Old room number in the form of "IT 4-1" or "EMB 2-151"
+     * newRoom      New room number in the form of "IT 4-1" or "EMB 2-151"
+     *
+     * @param jsonString JSON String with above parameters
+     */
+    public void updateBuildingRoom(String jsonString)
+    {
+                        // Clear Vectors
+                        Building.buildingVector.clear();
+                        Room.roomVector.clear();
+
+                        Gson jsonObj = new Gson();
+                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
+                        String buildingName = buildingObj.getName();
+                        String[] names = gson.fromJson(jsonString,String[].class);
+
                         String table = names[0];
                         String originalRoom = names[1];
                         String changeName = names[2];
@@ -255,26 +324,6 @@ public class DB_Functions
                             System.exit(0);
                         }
 
-    }
-
-    /**
-     * Bongani
-     *
-     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name
-     *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location to edit e.g. IT Building
-     * oldRoom      Old room number in the form of "IT 4-1" or "EMB 2-151"
-     * newRoom      New room number in the form of "IT 4-1" or "EMB 2-151"
-     *
-     * @param jsonString JSON String with above parameters
-     */
-    public void updateBuildingRoom(String jsonString)
-    {
-        // Clear Vectors
-        Building.buildingVector.clear();
-        Room.roomVector.clear();
     }
 
     /**
