@@ -10,9 +10,9 @@ CREATE DATABASE tempnavup
        LC_CTYPE = 'C'
        CONNECTION LIMIT = -1;
 
-DROP TABLE EMB_building
-DROP TABLE IT_building
-DROP TABLE buildings
+DROP TABLE EMB_building;
+DROP TABLE IT_building;
+DROP TABLE buildings;
 
 CREATE TABLE buildings (
   id SERIAL primary key  NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE EMB_building (
   level int NOT NULL,
   latitude double precision NOT NULL,
   longitude double precision NOT NULL,
-  build_id SERIAL references buildings(id)
+  build_id int references buildings(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IT_building (
@@ -37,7 +37,7 @@ CREATE TABLE IT_building (
   level int NOT NULL,
   latitude double precision NOT NULL,
   longitude double precision NOT NULL,
-  build_id SERIAL references buildings(id)
+  build_id int references buildings(id) ON DELETE CASCADE
 );
 
 INSERT INTO buildings (name, latitude, longitude, description)
@@ -87,6 +87,6 @@ VALUES ('EB/EMB 2-150', 2, -25.7554093,28.2334133, 2),
 	('EB/EMB 4-151', 4,-25.7552985,28.2333593, 2),
 	('EB/EMB 4-152', 4, -25.755392, 28.233645, 2);
 	
-SELECT * FROM EMB_building
-SELECT * FROM buildings
-SELECT * FROM IT_building
+SELECT * FROM EMB_building;
+SELECT * FROM buildings;
+SELECT * FROM IT_building;

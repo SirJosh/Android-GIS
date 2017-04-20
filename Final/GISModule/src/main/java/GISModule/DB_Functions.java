@@ -1,6 +1,8 @@
 package GISModule;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.sql.*;
 
 /**
@@ -14,10 +16,11 @@ import java.sql.*;
  * Gson is used for all our JSON conversions, check pom.xml for maven dependencies.
  *
  * @author  GIS - Team Longsword
- * @version 5.0
+ * @version 6.0
  * @since   3.0 : 11-04-2017
  * @since   4.0 : 16-04-2017
  * @since   5.0 : 19-04-2017
+ * @since   6.0 : 20-04-2017
  */
 
 public class DB_Functions
@@ -30,8 +33,9 @@ public class DB_Functions
     private String password = "password";                               // CHANGE PASSWORD HERE
 
     /**
-     * Bongani:
      * insertBuilding(buildingName, desc, lat, lon) - insert a new location.
+     *
+     * JSON Format : "{"name":"One Building","longitude":-24.7556415,"latitude":27.2319014,"description":"This is the one building"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -42,13 +46,14 @@ public class DB_Functions
      *
      * @param jsonString   JSON String with above parameters
      */
-    public void insertBuilding(String jsonString) // DONE : TEST
+    public void insertBuilding(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
         PreparedStatement pstmt = null;
+
 
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -58,50 +63,27 @@ public class DB_Functions
         String desc = buildingObj.getDescription();
         double lat = buildingObj.getLatitude();
         double longi = buildingObj.getLongitude();
-        
-        /*System.out.println("Outputting the data to insert");
-        System.out.println(buildingName);
-        System.out.println(desc);
-        System.out.println(lat);
-        System.out.println(longi);
-        System.out.println("Data exists");*/
 
         try
         {
 
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
+            stmt = c.createStatement();
 
             if(c == null)
             {
                 System.out.println("connection error");
             }
 
-            String sql = "INSERT INTO public.buildings (name,latitude,longitude,description) VALUES (?,?,?,?);";
+            String sql = "INSERT INTO public.buildings (name,latitude,longitude,description) " +
+                         "VALUES" + "(" + ("'" + buildingName + "'" + "," + lat + "," + longi + "," +  "'" + desc + "'") + ")";
 
-            pstmt = c.prepareStatement(sql);
-            pstmt.setString(1,buildingName);
-            pstmt.setDouble(2,lat);
-            pstmt.setDouble(3,longi);
-            pstmt.setString(4,desc);
-
-
-            pstmt.executeUpdate(sql);
+            stmt.executeUpdate(sql);
 
             System.out.println("Insert building done successfully");
-            
-            /* Alternative insert*****************************************************
-            String sql = "";
-
-            sql="INSERT INTO public.buildings (name,latitude,longitude,description)";
-            //sql += "public.buildings (Username,Password,Firstname,Lastname,Email,ActivatedKey,ResetKey,ResetDate,PhoneNumber)" ;
-            sql +="VALUES (\'";
-            sql += buildingName+"\',\'"+lat+"\',\'"+longi+"\',\'"+desc+"\');";
-            System.out.println("Insert building");
-
-            stmt.executeUpdate(sql);**********************************/
 
         }
         catch (Exception e)
@@ -113,10 +95,12 @@ public class DB_Functions
         {
             try
             {
-                if(pstmt != null)
-                    pstmt.close();
+                if(stmt != null)
+                    stmt.close();
                 if(c != null)
                     c.close();
+                if(pstmt != null)
+                    pstmt.close();
             }
             catch (Exception e)
             {
@@ -127,8 +111,9 @@ public class DB_Functions
     }
 
     /**
-     * Bongani:
      * insertBuildingRoom(buildingName, room, desc, lat, lon, level) - insert a new location.
+     *
+     * JSON Format : "{"name":"One Building", "roomName": "One 1-1"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -141,7 +126,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void insertBuildingRoom(String jsonString) // DONE : TEST
+    public void insertBuildingRoom(String jsonString) // FINISHED
     {
 
         PreparedStatement pstmt = null;
@@ -155,17 +140,13 @@ public class DB_Functions
         Building b = new Building();
 
         String buildingNameSearch = buildingObj.getName();
+        int fk_id = buildingObj.getId();
+
         String room = roomObj.getRoomName();
         int level = roomObj.getLevel();
         double lat = roomObj.getLatitude();
         double longi = roomObj.getLongitude();
-        
-        /*System.out.println("Outputting the data to insert");
-        System.out.println(buildingNameSearch);
-        System.out.println(level);
-        System.out.println(lat);
-        System.out.println(longi);
-        System.out.println("Data exists");*/
+
 
         String build = b.buildingsMap.get(buildingNameSearch);
 
@@ -177,24 +158,50 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
-            //stmt = c.createStatement();
-            String sql;
-            sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude) VALUES (?,?,?,?);").toString();
-            // System.out.println("Done declaring sql");
-            pstmt = c.prepareStatement(sql);
-            pstmt.setString(1,room);
-            pstmt.setInt(2,level);
-            pstmt.setDouble(3,lat);
-            pstmt.setDouble(4,longi);
 
-            pstmt.executeUpdate(sql);
-            System.out.println("Insert building room done successfully");
+            if(buildingNameSearch.equals("IT Building"))
+            {
+                String sql;
+                sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude, build_id) VALUES (?,?,?,?,?);").toString();
 
-            c.close();
+                fk_id = 1;
 
+                pstmt = c.prepareStatement(sql);
+                pstmt.setString(1,room);
+                pstmt.setInt(2,level);
+                pstmt.setDouble(3,lat);
+                pstmt.setDouble(4,longi);
+                pstmt.setInt(5,fk_id);
+
+                pstmt.execute();
+
+                System.out.println("Insert building room done successfully");
+
+                c.close();
+            }
+            else
+            {
+                String sql;
+                sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude, build_id) VALUES (?,?,?,?,?);").toString();
+
+                fk_id = 2;
+
+                pstmt = c.prepareStatement(sql);
+                pstmt.setString(1,room);
+                pstmt.setInt(2,level);
+                pstmt.setDouble(3,lat);
+                pstmt.setDouble(4,longi);
+                pstmt.setInt(5,fk_id);
+
+                pstmt.execute();
+
+                System.out.println("Insert building room done successfully");
+
+                c.close();
+            }
         }
         catch (Exception e)
         {
@@ -206,6 +213,8 @@ public class DB_Functions
         {
             try
             {
+                if(stmt != null)
+                    stmt.close();
                 if(pstmt != null)
                     pstmt.close();
             }
@@ -220,8 +229,9 @@ public class DB_Functions
     }
 
     /**
-     * Bongani:
      * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name.
+     *
+     * JSON Format : "{"oldBuildingName":"One Building", "newBuildingName": "ONE Building"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -230,20 +240,20 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingName(String jsonString) // DONE : TEST
+    public void updateBuildingName(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
+        JsonObject jsonObject = new Gson().fromJson(jsonString, JsonObject.class);
+        Gson returnJson = new Gson();
+
         Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-        String buildingName = buildingObj.getName();
-        String[] names = jsonObj.fromJson(jsonString, String[].class);
-
-        String originalRoom = names[0];
-        String changeName = names[1];
+        String originalRoom = jsonObject.get("oldBuildingName").getAsString();
+        String changeName = jsonObject.get("newBuildingName").getAsString();
 
         // Connection
         Connection c = null;
@@ -253,21 +263,19 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
-            String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =").append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
+            //String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =").append(" '").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
             //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.
 
-                           /* String sql = "UPDATE public.buildings " +
-                                    "SET name ="+"'"+changeName+"'"+
-                                    "WHERE name = "+originalRoom;*/
+            // UPDATE public.buildings SET name = 'Bubbles' WHERE name = ' Information Technology Building';
+            String sql = "UPDATE public.buildings " + "SET name = "+"'"+changeName+"'"+ " WHERE name = " + "'"+ originalRoom + "'";
 
-            ResultSet rs = stmt.executeQuery( sql);
+            stmt.executeUpdate(sql);
 
-            rs.close();
             stmt.close();
             c.close();
 
@@ -281,8 +289,9 @@ public class DB_Functions
     }
 
     /**
-     * Bongani:
      * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name.
+     *
+     * JSON Format : "{"buildingName":"IT Building", "oldRoom": "IT 4-5", "newRoom": "IT 4-6"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -292,21 +301,25 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingRoom(String jsonString) // DONE : TEST
+    public void updateBuildingRoom(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
+        JsonObject jsonObject = new Gson().fromJson(jsonString,JsonObject.class);
+        String jsonReturn = "";
+
+
         Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-        String buildingName = buildingObj.getName();
-        String[] names = jsonObj.fromJson(jsonString, String[].class);
 
-        String table = names[0];
-        String originalRoom = names[1];
-        String changeName = names[2];
+        String buildingName = jsonObject.get("buildingName").getAsString();
+        String build = buildingObj.buildingsMap.get(buildingName);
+
+        String originalRoom = jsonObject.get("oldRoom").getAsString();
+        String changeName = jsonObject.get("newRoom").getAsString();
 
         // Connection
         Connection c = null;
@@ -316,7 +329,7 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
@@ -325,12 +338,11 @@ public class DB_Functions
                                     .append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
                             //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.*/
 
-            String sql = "UPDATE public."+table+" SET name ="+"'"+changeName+"'"+
-                         "WHERE name = "+ "'" + originalRoom + "'";
+            String sql = "UPDATE public."+build+" SET roomName ="+"'"+changeName+"'"+
+                         "WHERE roomName = "+ "'" + originalRoom + "'";
 
-            ResultSet rs = stmt.executeQuery( sql);
+            stmt.executeUpdate( sql);
 
-            rs.close();
             stmt.close();
             c.close();
 
@@ -344,8 +356,9 @@ public class DB_Functions
     }
 
     /**
-     * BK:
      * updateBuildingCoordinates(buildingName, lat, lon) - update coordinates of a location.
+     *
+     * JSON Format : "{"buildingName":"IT Building", "latitude": "-23.2323", "longitude": "28.05678"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -355,7 +368,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingCoordinates(String jsonString) // DONE : TEST
+    public void updateBuildingCoordinates(String jsonString) // FINISHED
     {
         //Clear Vectors
         Building.buildingVector.clear();
@@ -376,18 +389,17 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
             String sql = "UPDATE public.buildings " +
                          "SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
-                         "WHERE name = "+buildingName;
+                         "WHERE name = '"+buildingName+"'";
 
-            ResultSet rs = stmt.executeQuery( sql);
 
-            rs.close();
+            stmt.executeUpdate(sql);
             stmt.close();
             c.close();
 
@@ -401,8 +413,9 @@ public class DB_Functions
     }
 
     /**
-     * Mfana:
      * updateBuildingRoomCoordinates(buildingName, room, lat, lon) - update coordinates of a location.
+     *
+     * JSON Format : "{"buildingName":"IT Building", "roomName":"IT 4-5", "latitude": "-23.2323", "longitude": "28.05678"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -413,7 +426,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void UpdateBuildingRoomCoordinates(String jsonString) // DONE : TEST
+    public void updateBuildingRoomCoordinates(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
@@ -436,18 +449,17 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
             String sql = "UPDATE public."+tableBuilding  +
-                         " SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
-                         "WHERE name = "+roomname;
+                         " SET longitude =" +longitude+ ",latitude ="+latitude+
+                         " WHERE roomName = '"+ roomname + "'";
 
-            ResultSet rs = stmt.executeQuery( sql);
+            stmt.executeUpdate(sql);
 
-            rs.close();
             stmt.close();
             c.close();
 
@@ -462,8 +474,9 @@ public class DB_Functions
     }
 
     /**
-     * Mfana:
      * removeBuilding(buildingName) - remove an existing location.
+     *
+     * JSON Format : "{"name":"Humanities Building"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -471,7 +484,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void removeBuilding(String jsonString) // DONE : TEST
+    public void removeBuilding(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
@@ -487,19 +500,14 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql1="DROP table "+tableBuilding+";"+"DELETE from public.buildings " + "WHERE name = "+buildingName;
-            ResultSet rs=stmt.executeQuery(sql1);
-            /*String sql = "DELETE from public.buildings " +
-                    "WHERE name = "+buildingName;
 
+            String sql = "DELETE from public.buildings " + "WHERE name = "+"'"+buildingName+"'";
+            stmt.executeUpdate(sql);
 
-            ResultSet rs = stmt.executeQuery( sql);*/
-
-            rs.close();
             stmt.close();
             c.close();
 
@@ -513,8 +521,9 @@ public class DB_Functions
     }
 
     /**
-     * Mfana:
      * removeBuildingRoom(buildingName, room) - remove an existing locations room.
+     *
+     * JSON Format : "{"name":"IT Building", "roomName": "IT 4-5"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -523,7 +532,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void removeBuildingRoom(String jsonString) // DONE : TEST
+    public void removeBuildingRoom(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
@@ -544,20 +553,23 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
+
             //System.out
-            String sql = "DELETE FROM "+ tableBuilding+
+            String sql = "DELETE FROM public."+ tableBuilding +
                          " WHERE roomname = "+ "'" +  room + "'";
-             stmt.executeUpdate( sql);
+
+            stmt.executeUpdate( sql);
 
             //rs.close();
             stmt.close();
             c.close();
-            System.out.println("aaaaaaaaaaaaaaaaaaaa");
+
+            System.out.println("Remove building room done successfully");
         }
         catch ( Exception e )
         {
@@ -567,14 +579,13 @@ public class DB_Functions
     }
 
     /**
-     * Joshua
      * listBuildings() - returns all the buildings available on main campus.
      *
      * Uses class Building to create the JSON objects.
      *
      * @return JSON string array
      */
-    public String listBuildings() // DONE : WORKING
+    public String listBuildings() // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
@@ -624,8 +635,9 @@ public class DB_Functions
     }
 
     /**
-     * Joshua:
      * listRoomNames(buildingName) - returns all rooms available in the building, provided that that the building name is given.
+     *
+     * JSON Format : "{"name":"IT Building";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -638,7 +650,7 @@ public class DB_Functions
      *
      * @return JSON string array
      */
-    public String listRoomNames(String jsonString) // DONE : WORKING
+    public String listRoomNames(String jsonString) // FINISHED
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -698,8 +710,9 @@ public class DB_Functions
 
 
     /**
-     * Joshua:
      * getBuildingByName(buildingName) - gets all information regarding a specific building.
+     *
+     * JSON Format : "{"name":"IT Building}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -709,7 +722,7 @@ public class DB_Functions
      *
      * @return JSON string
      */
-    public String getBuildingByName(String jsonString) // DONE : WORKING
+    public String getBuildingByName(String jsonString) // FINISHED
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -767,8 +780,9 @@ public class DB_Functions
     }
 
     /**
-     * Joshua:
      * getBuildingByCoordinates(lat, lon) - get all information on a building based on the coordinates provided.
+     *
+     * JSON Format : {"longitude":-25.755641,"latitude":28.231901};
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -779,7 +793,7 @@ public class DB_Functions
      *
      * @return JSON string
      */
-    public String getBuildingByCoordinates(String jsonString) // DONE : ROUGHLY WORKING
+    public String getBuildingByCoordinates(String jsonString) // FINISHED
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -869,8 +883,9 @@ public class DB_Functions
     }
 
     /**
-     * Joshua:
      * getLocationByRoomNumber(buildingName , room) - gets a location of a room by providing the building name and room.
+     *
+     * JSON Format : "{"name":"IT Building, "roomName": "IT 4-5"}";
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -884,7 +899,7 @@ public class DB_Functions
      *
      * @return JSON String
      */
-    public String getLocationByRoomNumber(String jsonString) // DONE : ROUGHLY WORKING
+    public String getLocationByRoomNumber(String jsonString) // FINISHED
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -952,8 +967,9 @@ public class DB_Functions
 
 
     /**
-     * BK:
      * getRoutes(sLat, sLong, dLat, dLong) - provides all possible routes between a start and end point for a user.
+     *
+     * JSON Format : {"sLat":"28.00", "sLong": "-20.00" ,"dLat": 28.231901, "dLong":-25.755641};
      *
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
@@ -971,21 +987,16 @@ public class DB_Functions
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
-
         String returnJsonString = "";
 
-        double sLat;
-        double sLong;
-        double dLat;
-        double dLong;
+        JsonObject jsonObject = new Gson().fromJson(jsonString, JsonObject.class);
+        Gson returnJson = new Gson();
 
-        Gson jsonObj = new Gson();
-        String[] string = jsonObj.fromJson(jsonString, String[].class);
+        double sLat = jsonObject.get("sLat").getAsDouble();
+        double sLong = jsonObject.get("sLong").getAsDouble();
+        double dLat = jsonObject.get("dLat").getAsDouble();
+        double dLong = jsonObject.get("dLong").getAsDouble();
 
-        sLat = Double.parseDouble(string[0]);
-        sLong = Double.parseDouble(string[1]);
-        dLat = Double.parseDouble(string[2]);
-        dLong = Double.parseDouble(string[3]);
 
         try
         {
@@ -996,22 +1007,22 @@ public class DB_Functions
 
             stmt = c.createStatement();
 
-            String sql = "SELECT * FROM PUBLIC.rooms WHERE longitude BETWEEN " + "'" + sLong + "' AND '"+dLong+"'"
-                    +"OR latitude BETWEEN " + "'" + sLat + "' AND '"+dLat+"'";
+            String sql = "SELECT * FROM PUBLIC.buildings WHERE latitude BETWEEN " + "'" + sLat + "' AND '"+dLat+"'";
+
 
             ResultSet rs = stmt.executeQuery( sql);
 
             while ( rs.next() )
             {
                 int id = rs.getInt("id");
-                String roomName = rs.getString("roomName");
-                int level = rs.getInt("level");
-                Double latitude = rs.getDouble("latitude");
-                Double longitude = rs.getDouble("longitude");
-                int build_id = rs.getInt("build_id");
+                String bName = rs.getString("name");
+                Double lat = rs.getDouble("latitude");
+                Double lon = rs.getDouble("longitude");
+                String descr = rs.getString("description");
 
-                Room b = new Room(id, roomName, level, latitude, longitude, build_id);
-                returnJsonString = jsonObj.toJson(b);
+                Building b = new Building(id, bName, lon, lat, descr);
+                Building.buildingVector.add(b);
+
             }
 
             rs.close();
@@ -1027,6 +1038,6 @@ public class DB_Functions
             System.exit(0);
         }
 
-        return returnJsonString;
+        return returnJson.toJson(Building.buildingVector);
     }
 }
