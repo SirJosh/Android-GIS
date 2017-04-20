@@ -88,9 +88,20 @@ public class DB_Functions
             pstmt.setString(4,desc);
 
 
-            pstmt.execute();
+            pstmt.executeUpdate(sql);
 
             System.out.println("Insert building done successfully");
+            
+            /* Alternative insert*****************************************************
+            String sql = "";
+
+            sql="INSERT INTO public.buildings (name,latitude,longitude,description)";
+            //sql += "public.buildings (Username,Password,Firstname,Lastname,Email,ActivatedKey,ResetKey,ResetDate,PhoneNumber)" ;
+            sql +="VALUES (\'";
+            sql += buildingName+"\',\'"+lat+"\',\'"+longi+"\',\'"+desc+"\');";
+            System.out.println("Insert building");
+
+            stmt.executeUpdate(sql);**********************************/
 
         }
         catch (Exception e)
@@ -179,7 +190,7 @@ public class DB_Functions
             pstmt.setDouble(3,lat);
             pstmt.setDouble(4,longi);
 
-            pstmt.execute();
+            pstmt.executeUpdate(sql);
             System.out.println("Insert building room done successfully");
 
             c.close();
