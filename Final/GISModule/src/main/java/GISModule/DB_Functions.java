@@ -1,37 +1,39 @@
 package GISModule;
 
 import com.google.gson.Gson;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-// Josh - 4
-// Bk - 3
-// Bongani - 4
-// Mfana - 3
+import java.sql.*;
 
 /**
  * The DB_Functions class provides the necessary functions for interaction
  * between other modules and the GIS module.
  *
- * Refer to documentation for building name and room name conventions
+ * Run the tempnavup.sql in POSTGRES SQL with the postGIS extensions.
+ *
+ * Refer to the building and room class for building name and room name conventions.
+ *
+ * Gson is used for all our JSON conversions, check pom.xml for maven dependencies.
  *
  * @author  GIS - Team Longsword
- * @version 4.0
- * @since   3.0 11-04-2017
- * @since   4.0 16-04-2017
+ * @version 5.0
+ * @since   3.0 : 11-04-2017
+ * @since   4.0 : 16-04-2017
+ * @since   5.0 : 19-04-2017
  */
 
 public class DB_Functions
 {
+    // Connection
+    private Connection c = null;
+    private Statement stmt = null;
+    private String url = "jdbc:postgresql://localhost:10000/tempnavup"; // CHANGE PORT NUMBER HERE
+    private String user = "postgres";
+    private String password = "password";                               // CHANGE PASSWORD HERE
+
     /**
-     * Bongani
+     * Bongani:
+     * insertBuilding(buildingName, desc, lat, lon) - insert a new location.
      *
-     * insertBuilding(buildingName, desc, lat, lon) - insert a new location
-     *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
      * desc         Building and room description / purpose
@@ -40,306 +42,295 @@ public class DB_Functions
      *
      * @param jsonString   JSON String with above parameters
      */
-    public void insertBuilding(String jsonString)
+    public void insertBuilding(String jsonString) // DONE : TEST
     {
-                        //connection
-                        Connection con = null;
-                        PreparedStatement stmt = null;
-                        String url = "jdbc:postgresql://localhost:10000/tempnavup";
-                        String user = "postgres";
-                        String password = "password";
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
-                        // JSON Conversion
-                        Gson jsonObj = new Gson();
-                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        PreparedStatement pstmt = null;
 
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-                        String buildingName = buildingObj.getName();
-                        String desc = buildingObj.getDescription();
-                        double lat = buildingObj.getLatitude();
-                        double longi = buildingObj.getLongitude();
+        String buildingName = buildingObj.getName();
+        String desc = buildingObj.getDescription();
+        double lat = buildingObj.getLatitude();
+        double longi = buildingObj.getLongitude();
 
-                        // Clear Vectors
-                        Building.buildingVector.clear();
-                        Room.roomVector.clear();
+        try
+        {
 
-                        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(url, user, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
 
-                            Class.forName("org.postgresql.Driver");
-                            con = DriverManager.getConnection(url,user,password);
-                            if(con == null) System.out.println("connection is junk");
-                            con.setAutoCommit(false);
-                            //System.out.println("Opened database successfully");
+            if(c == null)
+            {
+                System.out.println("connection error");
+            }
 
-                            //stmt = c.createStatement();
-                            String sql = "INSERT INTO buildings (name,latitude,longitude,description) VALUES (?,?,?,?);";
-                            //System.out.println("Done declaring sql");
-                            stmt = con.prepareStatement(sql);
-                            stmt.setString(1,buildingName);
-                            stmt.setDouble(2,lat);
-                            stmt.setDouble(3,longi);
-                            stmt.setString(4,desc);
+            String sql = "INSERT INTO public.buildings (name,latitude,longitude,description) VALUES (?,?,?,?);";
+
+            pstmt = c.prepareStatement(sql);
+            pstmt.setString(1,buildingName);
+            pstmt.setDouble(2,lat);
+            pstmt.setDouble(3,longi);
+            pstmt.setString(4,desc);
 
 
-                            stmt.executeUpdate();
-                            System.out.println("Done inserting");
+            pstmt.executeUpdate();
 
-                        } catch (Exception e) {
-                            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                            System.exit(0);
+            System.out.println("Insert building done successfully");
 
-
-                        } finally {
-                            try{
-                                if(stmt != null) stmt.close();
-                                if(con != null) con.close();
-                            } catch (Exception e){
-
-                                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                                System.exit(0);
-
-                            }
-                        }
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        finally
+        {
+            try
+            {
+                if(stmt != null)
+                    stmt.close();
+                if(c != null)
+                    c.close();
+            }
+            catch (Exception e)
+            {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
+            }
+        }
     }
 
     /**
-     * Bongani
+     * Bongani:
+     * insertBuildingRoom(buildingName, room, desc, lat, lon, level) - insert a new location.
      *
-     * insertBuildingRoom(buildingName, room, desc, lat, lon) - insert a new location
-     *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
      * room         Room number in the form of "IT 4-1" or "EMB 2-151"
      * desc         Building and room description / purpose
      * lat          Latitude of location
      * lon          Longitude of location
+     * level        Room level
      *
      * @param jsonString JSON String with above parameters
      */
-    public void insertBuildingRoom(String jsonString)
+    public void insertBuildingRoom(String jsonString) // DONE : TEST
     {
-                        //String s = String.format("string1%sI am a string", jsonString);--another way to apeend strings if the one I used does not work
 
-                        //connection
-                        Connection con = null;
-                        PreparedStatement stmt = null;
-                        String url = "jdbc:postgresql://localhost:10000/tempnavup";
-                        String user = "postgres";
-                        String password = "password";
+        PreparedStatement pstmt = null;
 
-                        // JSON Conversion
-                        Gson jsonObj = new Gson();
-                        Gson jsonObj2 = new Gson();
-                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
-                        Room roomObj = jsonObj.fromJson(jsonString, Room.class);
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Gson jsonObj2 = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Room roomObj = jsonObj.fromJson(jsonString, Room.class);
 
-                        Building b = new Building();
+        Building b = new Building();
 
-                        String buildingNameSearch = buildingObj.getName();
-                        String room = roomObj.getRoomName();
-                        int level = roomObj.getLevel();
-                        double lat = roomObj.getLatitude();
-                        double longi = roomObj.getLongitude();
+        String buildingNameSearch = buildingObj.getName();
+        String room = roomObj.getRoomName();
+        int level = roomObj.getLevel();
+        double lat = roomObj.getLatitude();
+        double longi = roomObj.getLongitude();
 
-                        String build = b.buildingsMap.get(buildingNameSearch);
+        String build = b.buildingsMap.get(buildingNameSearch);
 
-                        // Clear Vectors
-                        Building.buildingVector.clear();
-                        Room.roomVector.clear();
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
-                        try {
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(url, user, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
 
-                            Class.forName("org.postgresql.Driver");
-                            con = DriverManager.getConnection(url,user,password);
-                            if(con == null) System.out.println("connection is junk");
-                            con.setAutoCommit(false);
-                            System.out.println("Opened database successfully");
+            //stmt = c.createStatement();
+            String sql;
+            sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude) VALUES (?,?,?,?);").toString();
+            // System.out.println("Done declaring sql");
+            pstmt = c.prepareStatement(sql);
+            pstmt.setString(1,room);
+            pstmt.setInt(2,level);
+            pstmt.setDouble(3,lat);
+            pstmt.setDouble(4,longi);
 
-                            //stmt = c.createStatement();
-                            String sql;
-                            sql = new StringBuilder().append("INSERT INTO ").append(build).append(" (roomName,level,latitude,longitude) VALUES (?,?,?,?);").toString();
-                           // System.out.println("Done declaring sql");
-                            stmt = con.prepareStatement(sql);
-                            stmt.setString(1,room);
-                            stmt.setInt(1,level);
-                            stmt.setDouble(3,lat);
-                            stmt.setDouble(4,longi);
+            pstmt.executeUpdate();
+            System.out.println("Insert building room done successfully");
 
+            c.close();
 
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
 
-                            stmt.executeUpdate();
-                            //System.out.println("Done inserting");
+        }
+        finally
+        {
+            try
+            {
+                if(stmt != null)
+                    stmt.close();
+            }
+            catch (Exception e)
+            {
 
-                        } catch (Exception e) {
-                            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                            System.exit(0);
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
 
-
-                        } finally {
-                            try{
-                                if(stmt != null) stmt.close();
-                                if(con != null) con.close();
-                            } catch (Exception e){
-
-                                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                                System.exit(0);
-
-                            }
-                        }
-
-
+            }
+        }
     }
 
     /**
-     * Bongani
+     * Bongani:
+     * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name.
      *
-     * updateBuildingName(oldBuildingName, newBuildingName) - update an existing locations name
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * oldBuildingName Old building name of location e.g. IT Building
-     * newBuildingName New building name of location e.g. Information Technology Building
+     * oldBuildingName: Old building name of location e.g. IT Building.
+     * newBuildingName:  New building name of location e.g. Information Technology Building.
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingName(String jsonString)
+    public void updateBuildingName(String jsonString) // DONE : TEST
     {
-                        // Clear Vectors
-                        Building.buildingVector.clear();
-                        Room.roomVector.clear();
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
-                        Gson jsonObj = new Gson();
-                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-                        String buildingName = buildingObj.getName();
-                        String[] names = gson.fromJson(jsonString,String[].class);
+        String buildingName = buildingObj.getName();
+        String[] names = jsonObj.fromJson(jsonString, String[].class);
 
-                        String originalRoom = names[0];
-                        String changeName = names[1];
+        String originalRoom = names[0];
+        String changeName = names[1];
 
+        // Connection
+        Connection c = null;
+        Statement stmt = null;
 
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(url, user, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
 
+            stmt = c.createStatement();
 
-                        // Connection
-                        Connection c = null;
-                        Statement stmt = null;
-
-                        try
-                        {
-                            Class.forName("org.postgresql.Driver");
-                            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
-                            c.setAutoCommit(false);
-                            System.out.println("Opened database successfully");
-
-                            stmt = c.createStatement();
-
-                            String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =")
-                                    .append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
-                                    //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.
+            String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =").append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
+            //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.
 
                            /* String sql = "UPDATE public.buildings " +
                                     "SET name ="+"'"+changeName+"'"+
                                     "WHERE name = "+originalRoom;*/
 
-                            ResultSet rs = stmt.executeQuery( sql);
+            ResultSet rs = stmt.executeQuery( sql);
 
-                            rs.close();
-                            stmt.close();
-                            c.close();
+            rs.close();
+            stmt.close();
+            c.close();
 
-                        }
-                        catch ( Exception e )
-                        {
-                            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-                            System.exit(0);
-                        }
-
-                        System.out.println("Search for All rooms in a building done successfully");
-
+            System.out.println("Update building name done successfully");
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
     }
 
     /**
-     * Bongani
+     * Bongani:
+     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name.
      *
-     * updateBuildingRoom(buildingName, oldRoom, newRoom) - update an existing building room name
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location to edit e.g. IT Building
-     * oldRoom      Old room number in the form of "IT 4-1" or "EMB 2-151"
-     * newRoom      New room number in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location to edit e.g. IT Building.
+     * oldRoom:      Old room number in the form of "IT 4-1" or "EMB 2-151".
+     * newRoom:      New room number in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingRoom(String jsonString)
+    public void updateBuildingRoom(String jsonString) // DONE : TEST
     {
-                        // Clear Vectors
-                        Building.buildingVector.clear();
-                        Room.roomVector.clear();
+        // Clear Vectors
+        Building.buildingVector.clear();
+        Room.roomVector.clear();
 
-                        Gson jsonObj = new Gson();
-                        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Gson jsonObj = new Gson();
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-                        String buildingName = buildingObj.getName();
-                        String[] names = gson.fromJson(jsonString,String[].class);
+        String buildingName = buildingObj.getName();
+        String[] names = jsonObj.fromJson(jsonString, String[].class);
 
-                        String table = names[0];
-                        String originalRoom = names[1];
-                        String changeName = names[2];
+        String table = names[0];
+        String originalRoom = names[1];
+        String changeName = names[2];
 
+        // Connection
+        Connection c = null;
+        Statement stmt = null;
 
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection(url, user, password);
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
 
-
-                        // Connection
-                        Connection c = null;
-                        Statement stmt = null;
-
-                        try
-                        {
-                            Class.forName("org.postgresql.Driver");
-                            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
-                            c.setAutoCommit(false);
-                            System.out.println("Opened database successfully");
-
-                            stmt = c.createStatement();
+            stmt = c.createStatement();
 
                             /*String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =")
                                     .append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
                             //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.*/
 
-                            String sql = "UPDATE public."+table+"SET name ="+"'"+changeName+"'"+
-                                    "WHERE name = "+originalRoom;
+            String sql = "UPDATE public."+table+" SET name ="+"'"+changeName+"'"+
+                         "WHERE name = "+ "'" + originalRoom + "'";
 
-                            ResultSet rs = stmt.executeQuery( sql);
+            ResultSet rs = stmt.executeQuery( sql);
 
-                            rs.close();
-                            stmt.close();
-                            c.close();
+            rs.close();
+            stmt.close();
+            c.close();
 
-                        }
-                        catch ( Exception e )
-                        {
-                            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-                            System.exit(0);
-                        }
-
+            System.out.println("Update building room done successfully");
+        }
+        catch ( Exception e )
+        {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
     }
 
     /**
-     * BK
+     * BK:
+     * updateBuildingCoordinates(buildingName, lat, lon) - update coordinates of a location.
      *
-     * updateBuildingCoordinates(buildingName, lat, lon) - update coordinates of a location
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location e.g. IT Building
-     * lat          New latitude of location
-     * lon          New longitude of location
+     * buildingName: Building name of location e.g. IT Building.
+     * lat:          New latitude of location.
+     * lon:          New longitude of location.
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingCoordinates(String jsonString)
+    public void updateBuildingCoordinates(String jsonString) // DONE : TEST
     {
         //Clear Vectors
         Building.buildingVector.clear();
@@ -359,15 +350,15 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
             String sql = "UPDATE public.buildings " +
-                        "SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
-                        "WHERE name = "+buildingName;
+                         "SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
+                         "WHERE name = "+buildingName;
 
             ResultSet rs = stmt.executeQuery( sql);
 
@@ -375,69 +366,68 @@ public class DB_Functions
             stmt.close();
             c.close();
 
+            System.out.println("Update building by coordinates done successfully");
         }
         catch ( Exception e )
         {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-
-        System.out.println("Search for All rooms in a building done successfully");
-
     }
 
     /**
-     * Mfana
+     * Mfana:
+     * updateBuildingRoomCoordinates(buildingName, room, lat, lon) - update coordinates of a location.
      *
-     * updateBuildingRoomCoordinates(buildingName, room, lat, lon) - update coordinates of a location
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number to edit in the form of "IT 4-1" or "EMB 2-151"
-     * lat          New latitude of location
-     * lon          New longitude of location
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number to edit in the form of "IT 4-1" or "EMB 2-151".
+     * lat:          New latitude of location.
+     * lon:          New longitude of location.
      *
      * @param jsonString JSON String with above parameters
      */
-    public void UpdateBuildingRoomCoordinates(String jsonString)
+    public void UpdateBuildingRoomCoordinates(String jsonString) // DONE : TEST
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
 
-        Gson jsonObj =new Gson();
+        Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
         Room roomObj =jsonObj.fromJson(jsonString,Room.class);
 
-        String buildingName=buildingObj.getName();
-        String roomname=roomObj.getRoomName();
+        String buildingName = buildingObj.getName();
+        String roomname = roomObj.getRoomName();
         double latitude = roomObj.getLatitude();
         double longitude = roomObj.getLongitude();
+
         String tableBuilding = buildingObj.buildingsMap.get(buildingName);
-        
-        Connection c = null;
-        Statement stmt = null;
+
 
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
             String sql = "UPDATE public."+tableBuilding  +
-                    " SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
-                    "WHERE name = "+roomname;
+                         " SET longitude ="+"'"+longitude+"'"+", latitude ="+"'"+latitude+"'"+
+                         "WHERE name = "+roomname;
 
             ResultSet rs = stmt.executeQuery( sql);
 
             rs.close();
             stmt.close();
             c.close();
+
+            System.out.println("Update building room coordinates done successfully");
+
         }
         catch ( Exception e )
         {
@@ -447,31 +437,31 @@ public class DB_Functions
     }
 
     /**
-     * Mfana
-     * removeBuilding(buildingName) - remove an existing location
+     * Mfana:
+     * removeBuilding(buildingName) - remove an existing location.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      */
-    public void removeBuilding(String jsonString)
+    public void removeBuilding(String jsonString) // DONE : TEST
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
+
         Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+
         String buildingName = buildingObj.getName();
         String tableBuilding = buildingObj.buildingsMap.get(buildingName);
-        Connection c = null;
-        Statement stmt = null;
 
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -487,6 +477,8 @@ public class DB_Functions
             rs.close();
             stmt.close();
             c.close();
+
+            System.out.println("Remove building done successfully");
         }
         catch ( Exception e )
         {
@@ -496,18 +488,17 @@ public class DB_Functions
     }
 
     /**
-     * Mfana
+     * Mfana:
+     * removeBuildingRoom(buildingName, room) - remove an existing locations room.
      *
-     * removeBuildingRoom(buildingName, room) - remove an existing locations room
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number to remove in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number to remove in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      */
-    public void removeBuildingRoom(String jsonString)
+    public void removeBuildingRoom(String jsonString) // DONE : TEST
     {
         // Clear Vectors
         Building.buildingVector.clear();
@@ -528,7 +519,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -536,11 +527,14 @@ public class DB_Functions
 
             String sql = "DELETE public."+tableBuilding+
                          " WHERE roomName = "+ "'" +  room + "'";
-             stmt.executeQuery( sql);
+
+            stmt.executeQuery( sql);
 
             //rs.close();
             stmt.close();
             c.close();
+
+            System.out.println("Remove building room done successfully");
         }
         catch ( Exception e )
         {
@@ -551,19 +545,14 @@ public class DB_Functions
 
     /**
      * Joshua
+     * listBuildings() - returns all the buildings available on main campus.
      *
-     * listBuildings() - returns all the buildings available on main campus
-     *
-     * Uses class Building to create the JSON objects
+     * Uses class Building to create the JSON objects.
      *
      * @return JSON string array
      */
-    public String listBuildings()
+    public String listBuildings() // DONE : WORKING
     {
-        // Connection
-        Connection c = null;
-        Statement stmt = null;
-
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
@@ -571,7 +560,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -597,14 +586,13 @@ public class DB_Functions
             stmt.close();
             c.close();
 
+            System.out.println("Search for All building done successfully");
         }
         catch ( Exception e )
         {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-
-        System.out.println("Search for All building done successfully");
 
         // Create the json array from the vector
         Gson jsonObj = new Gson();
@@ -613,21 +601,21 @@ public class DB_Functions
     }
 
     /**
-     * Joshua
-     * listRoomNames(buildingName) - returns all rooms available in the building, provided that that the building name is given
+     * Joshua:
+     * listRoomNames(buildingName) - returns all rooms available in the building, provided that that the building name is given.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * Uses a HashMap to link the building name to a table name in the database,
-     * along with the class Room to create the JSON objects
+     * along with the class Room to create the JSON objects.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      *
      * @return JSON string array
      */
-    public String listRoomNames(String jsonString)
+    public String listRoomNames(String jsonString) // DONE : WORKING
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -647,7 +635,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -673,6 +661,7 @@ public class DB_Functions
             rs.close();
             stmt.close();
             c.close();
+            System.out.println("Search for All rooms in a building done successfully");
 
         }
         catch ( Exception e )
@@ -680,27 +669,24 @@ public class DB_Functions
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-
-        System.out.println("Search for All rooms in a building done successfully");
-
         // Create the json array from the vector
         return jsonObj.toJson(Room.roomVector);
     }
 
 
     /**
-     * Joshua
-     * getBuildingByName(buildingName) - gets all information regarding a specific building
+     * Joshua:
+     * getBuildingByName(buildingName) - gets all information regarding a specific building.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * buildingName Building name of location e.g. IT Building
+     * buildingName: Building name of location e.g. IT Building.
      *
      * @param jsonString JSON String with above parameters
      *
      * @return JSON string
      */
-    public String getBuildingByName(String jsonString)
+    public String getBuildingByName(String jsonString) // DONE : WORKING
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -720,7 +706,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -746,6 +732,7 @@ public class DB_Functions
             stmt.close();
             c.close();
 
+            System.out.println("Search for building by name done successfully");
         }
         catch ( Exception e )
         {
@@ -753,26 +740,23 @@ public class DB_Functions
             System.exit(0);
         }
 
-        System.out.println("Search for building by name done successfully");
-
         return returnJsonString;
     }
 
     /**
-     * Joshua
+     * Joshua:
+     * getBuildingByCoordinates(lat, lon) - get all information on a building based on the coordinates provided.
      *
-     * getBuildingByCoordinates(lat, lon) - get all information on a building based on the coordinates provided
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * lat Latitude of location
-     * lon Longitude of location
+     * lat: Latitude of location.
+     * lon: Longitude of location.
      *
      * @param jsonString JSON String with above parameters
      *
      * @return JSON string
      */
-    public String getBuildingByCoordinates(String jsonString)
+    public String getBuildingByCoordinates(String jsonString) // DONE : ROUGHLY WORKING
     {
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -793,7 +777,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -843,14 +827,13 @@ public class DB_Functions
             stmt.close();
             c.close();
 
+            System.out.println("Search for building by coordinates done successfully");
         }
         catch ( Exception e )
         {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-
-        System.out.println("Search for building by coordinates done successfully");
 
         if(count > -1)
         {
@@ -863,44 +846,49 @@ public class DB_Functions
     }
 
     /**
-     * BK
+     * Joshua:
+     * getLocationByRoomNumber(buildingName , room) - gets a location of a room by providing the building name and room.
      *
-     * getLocationByRoomNumber(buildingName , room) - gets a location of a room by providing the building name and room
-     *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * Uses a HashMap to link the building name to a table name in the database,
-     * along with the class Room to create the JSON objects
+     * along with the class Room to create the JSON objects.
      *
-     * buildingName Building name of location e.g. IT Building
-     * room         Room number in the form of "IT 4-1" or "EMB 2-151"
+     * buildingName: Building name of location e.g. IT Building.
+     * room:         Room number in the form of "IT 4-1" or "EMB 2-151".
      *
      * @param jsonString JSON String with above parameters
      *
      * @return JSON String
      */
-    public String getLocationByRoomNumber(String jsonString)
+    public String getLocationByRoomNumber(String jsonString) // DONE : ROUGHLY WORKING
     {
-        Gson r = new Gson();
-        String jsonS = "";
+        // JSON Conversion
+        Gson jsonObj = new Gson();
+        Gson jsonObjTwo = new Gson();
+
+        Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        Room roomObj = jsonObjTwo.fromJson(jsonString, Room.class);
+
         Building b = new Building();
 
-        Connection c = null;
-        Statement stmt = null;
+        String buildingNameSearch = buildingObj.getName();
+        String room = roomObj.getRoomName();
+        String returnJsonString = "";
+
+        String build = b.buildingsMap.get(buildingNameSearch);
 
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
-        String buildingName = null;
-        String room = null;
-
-        String build = b.buildingsMap.get(buildingName);
+        Connection c = null;
+        Statement stmt = null;
 
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -920,13 +908,14 @@ public class DB_Functions
                 int build_id = rs.getInt("build_id");
 
                 Room rm = new Room(id, rName, lvl, lonn, latt, build_id);
-                jsonS += r.toJson(rm) + ",";
+                returnJsonString =  jsonObj.toJson(rm);
             }
 
             rs.close();
             stmt.close();
             c.close();
 
+            System.out.println("Search for building room by name done successfully");
         }
         catch ( Exception e )
         {
@@ -934,49 +923,41 @@ public class DB_Functions
             System.exit(0);
         }
 
-        System.out.println("Search for building room  by name done successfully");
-        return jsonS;
+        return returnJsonString;
 
     }
 
 
     /**
-     * BK
+     * BK:
+     * getRoutes(sLat, sLong, dLat, dLong) - provides all possible routes between a start and end point for a user.
      *
-     * getRoutes(sLat, sLong, dLat, dLong) - provides all possible routes between a start and end point for a user
+     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
-     * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide
-     *
-     * sLat          Start latitude
-     * sLong         Start longitude
-     * dLat          Destination latitude
-     * dLong         Destination longitude
+     * sLat:          Start latitude
+     * sLong:         Start longitude
+     * dLat:          Destination latitude
+     * dLong:         Destination longitude
      *
      * @param jsonString JSON String with above parameters
      *
      * @return JSON String array
      */
-    public String getRoutes(String jsonString)
+    public String getRoutes(String jsonString) // DONE
     {
-         String returnJsonString = "";
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
-      //  Gson jsonObj = new Gson();
-       // Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
+        String returnJsonString = "";
 
         double sLat;
         double sLong;
         double dLat;
         double dLong;
 
-        // Connection
-        Connection c = null;
-        Statement stmt = null;
-
         Gson jsonObj = new Gson();
-        String[] string = gson.fromJson(jsonString,String[].class);
+        String[] string = jsonObj.fromJson(jsonString, String[].class);
 
         sLat = Double.parseDouble(string[0]);
         sLong = Double.parseDouble(string[1]);
@@ -986,7 +967,7 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:10000/tempnavup","postgres", "password");
+            c = DriverManager.getConnection(url, user, password);
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
@@ -1013,6 +994,8 @@ public class DB_Functions
             rs.close();
             stmt.close();
             c.close();
+            System.out.println("Possible routes have been given successfully");
+
 
         }
         catch ( Exception e )
@@ -1021,10 +1004,6 @@ public class DB_Functions
             System.exit(0);
         }
 
-        System.out.println("Search for building by name done successfully");
-
         return returnJsonString;
-
-        return "";
     }
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DataExportManager">
@@ -24,18 +24,18 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="93fc660c-7d19-4d0a-8b97-5fd579913802">
-        <schema name="information_schema" object-types="function, sequence, table, view" />
-        <schema name="pg_catalog" object-types="function" />
-        <schema name="public" object-types="column, constraint, function, index, sequence, table, dataset trigger, view" />
+      <connection connection-id="31dc5f88-190c-44a8-831f-7bd8478fecba">
+        <schema name="information_schema" object-types="function, table, view" />
+        <schema name="pg_catalog" object-types="function, table, view" />
+        <schema name="public" object-types="function, table, view" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="93fc660c-7d19-4d0a-8b97-5fd579913802">
-      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".buildings
+    <connection id="31dc5f88-190c-44a8-831f-7bd8478fecba">
+      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".emb_building
 
-SELECT * FROM public.buildings WHERE latitude::text LIKE '28.231%' AND longitude::text LIKE '-25.755%']]></console>
+select name from "public".buildings]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
@@ -61,7 +61,7 @@ SELECT * FROM public.buildings WHERE latitude::text LIKE '28.231%' AND longitude
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="93fc660c-7d19-4d0a-8b97-5fd579913802" active="true">
+      <connection id="31dc5f88-190c-44a8-831f-7bd8478fecba" active="true">
         <database>
           <name value="tempnavup" />
           <description value="" />
