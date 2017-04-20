@@ -544,22 +544,20 @@ public class DB_Functions
         try
         {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/tempnavup","postgres", "1234");
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-
-            String sql = "DELETE public."+tableBuilding+
-                         " WHERE roomName = "+ "'" +  room + "'";
-
-            stmt.executeQuery( sql);
+            //System.out
+            String sql = "DELETE FROM "+ tableBuilding+
+                         " WHERE roomname = "+ "'" +  room + "'";
+             stmt.executeUpdate( sql);
 
             //rs.close();
             stmt.close();
             c.close();
-
-            System.out.println("Remove building room done successfully");
+            System.out.println("aaaaaaaaaaaaaaaaaaaa");
         }
         catch ( Exception e )
         {
