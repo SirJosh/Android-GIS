@@ -51,12 +51,22 @@ public class PostgreSQLJDBC
     private static void insertFunctions()
     {
         // LIST ALL BUILDINGS
-        System.out.println("Before Insert");
+        System.out.println("Before Buildings Insert");
+        System.out.println(ex.listBuildings() + "\n");
+        
+        String insBuilding1 = "{\"name\":\"One Building\",\"longitude\":-24.7556415,\"latitude\":27.2319014,\"description\":\"This is the one buidling\"}";
+        String insBuilding2 = "{\"name\":\"Two Building\",\"longitude\":-25.7556415,\"latitude\":28.2319014,\"description\":\"This is the two buidling\"}";
+        String insBuilding3 = "{\"name\":\"Three Building\",\"longitude\":-26.7556415,\"latitude\":29.2319014,\"description\":\"This is the three buidling\"}";
+        System.out.println("INSERTING DATA\n");
+        ex.insertBuilding(insBuilding1);
+        ex.insertBuilding(insBuilding2);
+        ex.insertBuilding(insBuilding3);
+        System.out.println("After Buildings Insert");
         System.out.println(ex.listBuildings() + "\n");
 
         //ex.insertBuildingRoom("{\"name\": \"IT Building\", \"roomName\": \"IT 5-100\", \"longitude\":-25.00000,\"latitude\":28.00000, \"level\":5 }");
 
-        ex.insertBuilding("{\"name\": \"Joshua Land Building\", \"description\": \"This is mine now\", \"longitude\":-25.00000,\"latitude\":28.00000}");
+        //ex.insertBuilding("{\"name\": \"Joshua Land Building\", \"description\": \"This is mine now\", \"longitude\":-25.00000,\"latitude\":28.00000}");
 
         System.out.println("After Insert");
         System.out.println(ex.listBuildings() + "\n");
