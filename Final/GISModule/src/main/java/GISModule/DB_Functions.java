@@ -58,6 +58,13 @@ public class DB_Functions
         String desc = buildingObj.getDescription();
         double lat = buildingObj.getLatitude();
         double longi = buildingObj.getLongitude();
+        
+        /*System.out.println("Outputting the data to insert");
+        System.out.println(buildingName);
+        System.out.println(desc);
+        System.out.println(lat);
+        System.out.println(longi);
+        System.out.println("Data exists");*/
 
         try
         {
