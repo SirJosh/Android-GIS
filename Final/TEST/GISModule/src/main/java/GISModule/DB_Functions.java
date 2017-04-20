@@ -34,7 +34,7 @@ public class DB_Functions
     /**
      * Bongani:
      * insertBuilding(buildingName, desc, lat, lon) - insert a new location.
-     *
+     * JSON Format : {}
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
@@ -44,13 +44,14 @@ public class DB_Functions
      *
      * @param jsonString   JSON String with above parameters
      */
-    public void insertBuilding(String jsonString) // DONE : TEST
+    public void insertBuilding(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
         PreparedStatement pstmt = null;
+
 
         // JSON Conversion
         Gson jsonObj = new Gson();
@@ -66,24 +67,19 @@ public class DB_Functions
 
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
+            stmt = c.createStatement();
 
             if(c == null)
             {
                 System.out.println("connection error");
             }
 
-            String sql = "INSERT INTO public.buildings (name,latitude,longitude,description) VALUES (?,?,?,?);";
+            String sql = "INSERT INTO public.buildings (name,latitude,longitude,description) " +
+                         "VALUES" + "(" + ("'" + buildingName + "'" + "," + lat + "," + longi + "," +  "'" + desc + "'") + ")";
 
-            pstmt = c.prepareStatement(sql);
-            pstmt.setString(1,buildingName);
-            pstmt.setDouble(2,lat);
-            pstmt.setDouble(3,longi);
-            pstmt.setString(4,desc);
-
-
-            pstmt.execute();
+            stmt.executeUpdate(sql);
 
             System.out.println("Insert building done successfully");
 
@@ -115,7 +111,7 @@ public class DB_Functions
     /**
      * Bongani:
      * insertBuildingRoom(buildingName, room, desc, lat, lon, level) - insert a new location.
-     *
+     * JSON Format : {}
      * Will receive these parameters in the form of a JSON String - use https://sites.google.com/site/gson/gson-user-guide.
      *
      * buildingName Building name of new location e.g. IT Building
@@ -127,7 +123,7 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void insertBuildingRoom(String jsonString) // DONE : TEST
+    public void insertBuildingRoom(String jsonString) // FINISHED
     {
 
         PreparedStatement pstmt = null;
@@ -141,10 +137,13 @@ public class DB_Functions
         Building b = new Building();
 
         String buildingNameSearch = buildingObj.getName();
+        int fk_id = buildingObj.getId();
+
         String room = roomObj.getRoomName();
         int level = roomObj.getLevel();
         double lat = roomObj.getLatitude();
         double longi = roomObj.getLongitude();
+
 
         String build = b.buildingsMap.get(buildingNameSearch);
 
@@ -156,25 +155,50 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
-            //stmt = c.createStatement();
-            String sql;
-            sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude) VALUES (?,?,?,?);").toString();
-            // System.out.println("Done declaring sql");
-            pstmt = c.prepareStatement(sql);
-            pstmt.setString(1,room);
-            pstmt.setInt(2,level);
-            pstmt.setDouble(3,lat);
-            pstmt.setDouble(4,longi);
 
-            pstmt.execute();
+            if(buildingNameSearch.equals("IT Building"))
+            {
+                String sql;
+                sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude, build_id) VALUES (?,?,?,?,?);").toString();
 
-            System.out.println("Insert building room done successfully");
+                fk_id = 1;
 
-            c.close();
+                pstmt = c.prepareStatement(sql);
+                pstmt.setString(1,room);
+                pstmt.setInt(2,level);
+                pstmt.setDouble(3,lat);
+                pstmt.setDouble(4,longi);
+                pstmt.setInt(5,fk_id);
 
+                pstmt.execute();
+
+                System.out.println("Insert building room done successfully");
+
+                c.close();
+            }
+            else
+            {
+                String sql;
+                sql = new StringBuilder().append("INSERT INTO public.").append(build).append(" (roomName,level,latitude,longitude, build_id) VALUES (?,?,?,?,?);").toString();
+
+                fk_id = 2;
+
+                pstmt = c.prepareStatement(sql);
+                pstmt.setString(1,room);
+                pstmt.setInt(2,level);
+                pstmt.setDouble(3,lat);
+                pstmt.setDouble(4,longi);
+                pstmt.setInt(5,fk_id);
+
+                pstmt.execute();
+
+                System.out.println("Insert building room done successfully");
+
+                c.close();
+            }
         }
         catch (Exception e)
         {
@@ -212,20 +236,20 @@ public class DB_Functions
      *
      * @param jsonString JSON String with above parameters
      */
-    public void updateBuildingName(String jsonString) // DONE : TEST
+    public void updateBuildingName(String jsonString) // FINISHED
     {
         // Clear Vectors
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
+        JsonObject jsonObject = new Gson().fromJson(jsonString, JsonObject.class);
+        Gson returnJson = new Gson();
+
         Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
-        String buildingName = buildingObj.getName();
-        String[] names = jsonObj.fromJson(jsonString, String[].class);
-
-        String originalRoom = names[0];
-        String changeName = names[1];
+        String originalRoom = jsonObject.get("oldBuildingName").getAsString();
+        String changeName = jsonObject.get("newBuildingName").getAsString();
 
         // Connection
         Connection c = null;
@@ -235,21 +259,19 @@ public class DB_Functions
         {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, user, password);
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
 
-            String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =").append("'").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
+            //String sql = new StringBuilder().append("UPDATE public.buildings ").append("SET name =").append(" '").append(changeName).append("'").append("WHERE name = ").append(originalRoom).toString();
             //I used the append function(stringBuilder) ... if it does not work, the normal one in  in the comment bellow.
 
-                           /* String sql = "UPDATE public.buildings " +
-                                    "SET name ="+"'"+changeName+"'"+
-                                    "WHERE name = "+originalRoom;*/
+            // UPDATE public.buildings SET name = 'Bubbles' WHERE name = ' Information Technology Building';
+            String sql = "UPDATE public.buildings " + "SET name = "+"'"+changeName+"'"+ " WHERE name = " + "'"+ originalRoom + "'";
 
-            ResultSet rs = stmt.executeQuery( sql);
+            stmt.executeUpdate(sql);
 
-            rs.close();
             stmt.close();
             c.close();
 
@@ -280,6 +302,9 @@ public class DB_Functions
         Building.buildingVector.clear();
         Room.roomVector.clear();
 
+        
+
+
         Gson jsonObj = new Gson();
         Building buildingObj = jsonObj.fromJson(jsonString, Building.class);
 
@@ -288,7 +313,7 @@ public class DB_Functions
 
         String table = names[0];
         String originalRoom = names[1];
-        String changeName = names[2];
+        String changeName =
 
         // Connection
         Connection c = null;

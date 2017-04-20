@@ -27,13 +27,13 @@ public class PostgreSQLJDBC
             //listSearchFunctions();
 
             // UPDATES FUNCTIONS
-            //updateFunctions();
+            updateFunctions();
 
             // REMOVE FUNCTIONS
 
 
             // GET ROUTE
-            getRoutes();
+            //getRoutes();
 
         }
         catch (Exception e)
@@ -51,26 +51,36 @@ public class PostgreSQLJDBC
     private static void insertFunctions()
     {
         // LIST ALL BUILDINGS
-        System.out.println("Before Buildings Insert");
-        System.out.println(ex.listBuildings() + "\n");
+//        System.out.println("Before Buildings Insert");
+//        System.out.println(ex.listBuildings() + "\n");
+//
+//        String insBuilding1 = "{\"name\":\"One Building\",\"longitude\":-24.7556415,\"latitude\":27.2319014,\"description\":\"This is the one buidling\"}";
+//        String insBuilding2 = "{\"name\":\"Two Building\",\"longitude\":-25.7556415,\"latitude\":28.2319014,\"description\":\"This is the two buidling\"}";
+//        String insBuilding3 = "{\"name\":\"Three Building\",\"longitude\":-26.7556415,\"latitude\":29.2319014,\"description\":\"This is the three buidling\"}";
+//        System.out.println("INSERTING DATA\n");
+//
+//        ex.insertBuilding(insBuilding1);
+//        ex.insertBuilding(insBuilding2);
+//        ex.insertBuilding(insBuilding3);
+//
+//        System.out.println("\nAfter Buildings Insert");
 
-        String insBuilding1 = "{\"name\":\"One Building\",\"longitude\":-24.7556415,\"latitude\":27.2319014,\"description\":\"This is the one buidling\"}";
-        String insBuilding2 = "{\"name\":\"Two Building\",\"longitude\":-25.7556415,\"latitude\":28.2319014,\"description\":\"This is the two buidling\"}";
-        String insBuilding3 = "{\"name\":\"Three Building\",\"longitude\":-26.7556415,\"latitude\":29.2319014,\"description\":\"This is the three buidling\"}";
-        System.out.println("INSERTING DATA\n");
 
-        ex.insertBuilding(insBuilding1);
-        ex.insertBuilding(insBuilding2);
-        ex.insertBuilding(insBuilding3);
+//        System.out.println("After Insert");
+        //System.out.println(ex.listBuildings() + "\n");
+//
+//        System.out.println("IT Room Insert");
+//        ex.insertBuildingRoom("{\"name\": \"IT Building\", \"roomName\": \"IT 5-100\", \"longitude\":-25.00000,\"latitude\":28.00000, \"level\":5 }");
+//
+//        System.out.println("Display Rooms");
+//        System.out.println(ex.listRoomNames("{\"name\": \"IT Building\"}"));
 
-        System.out.println("\nAfter Buildings Insert");
+        System.out.println("EMB Room Insert");
+        ex.insertBuildingRoom("{\"name\": \"EMB Building\", \"roomName\": \"EB/EMB 6-500\", \"longitude\":-25.12354,\"latitude\":28.1254, \"level\":6 }");
 
-        //ex.insertBuildingRoom("{\"name\": \"IT Building\", \"roomName\": \"IT 5-100\", \"longitude\":-25.00000,\"latitude\":28.00000, \"level\":5 }");
+        System.out.println("Display Rooms");
+        System.out.println(ex.listRoomNames("{\"name\": \"EMB Building\"}"));
 
-        //ex.insertBuilding("{\"name\": \"Joshua Land Building\", \"description\": \"This is mine now\", \"longitude\":-25.00000,\"latitude\":28.00000}");
-
-        System.out.println("After Insert");
-        System.out.println(ex.listBuildings() + "\n");
 
     }
 
@@ -131,8 +141,15 @@ public class PostgreSQLJDBC
 
     private static void updateFunctions()
     {
-        System.out.println("Update Building Name");
-        ex.updateBuildingName("{\"name\": \"IT Building\", \"name\": \" Information Technology Building\"}");
+//        System.out.println("Update IT Building Name");
+//        ex.updateBuildingName("{\"oldBuildingName\": \" Information Technology Building\", \"newBuildingName\": \"IT Building\"}");
+//
+//        System.out.println(ex.listBuildings());
+//
+//        System.out.println("Update EMB Building Name");
+//        ex.updateBuildingName("{\"oldBuildingName\": \"EMB Building\", \"newBuildingName\": \"Economics Building\"}");
+//
+//        System.out.println(ex.listBuildings());
     }
 
     private static void removeFunctions()

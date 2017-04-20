@@ -26,20 +26,22 @@
     <loaded-nodes>
       <connection connection-id="31dc5f88-190c-44a8-831f-7bd8478fecba">
         <schema name="information_schema" object-types="function, table, view" />
-        <schema name="pg_catalog" object-types="function" />
+        <schema name="pg_catalog" object-types="function, table, view" />
         <schema name="public" object-types="column, function, sequence, table, view" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="31dc5f88-190c-44a8-831f-7bd8478fecba">
-      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".emb_building
+      <console name="tempnavup" type="STANDARD"><![CDATA[select * from "public".it_building
 
 select * from "public".buildings
 
-select * from "public".
+SELECT * FROM PUBLIC.buildings WHERE latitude BETWEEN 28.0 AND 28.231
 
-SELECT * FROM PUBLIC.buildings WHERE latitude BETWEEN 28.0 AND 28.231]]></console>
+delete  from "public".it_building where roomName = 'IT 5-100'
+
+UPDATE public.buildings SET name = 'Bubbles' WHERE name = ' Information Technology Building';]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
