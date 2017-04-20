@@ -88,7 +88,7 @@ public class DB_Functions
             pstmt.setString(4,desc);
 
 
-            pstmt.executeUpdate();
+            pstmt.execute();
 
             System.out.println("Insert building done successfully");
 
@@ -102,8 +102,8 @@ public class DB_Functions
         {
             try
             {
-                if(stmt != null)
-                    stmt.close();
+                if(pstmt != null)
+                    pstmt.close();
                 if(c != null)
                     c.close();
             }
@@ -148,6 +148,13 @@ public class DB_Functions
         int level = roomObj.getLevel();
         double lat = roomObj.getLatitude();
         double longi = roomObj.getLongitude();
+        
+        /*System.out.println("Outputting the data to insert");
+        System.out.println(buildingNameSearch);
+        System.out.println(level);
+        System.out.println(lat);
+        System.out.println(longi);
+        System.out.println("Data exists");*/
 
         String build = b.buildingsMap.get(buildingNameSearch);
 
@@ -172,7 +179,7 @@ public class DB_Functions
             pstmt.setDouble(3,lat);
             pstmt.setDouble(4,longi);
 
-            pstmt.executeUpdate();
+            pstmt.execute();
             System.out.println("Insert building room done successfully");
 
             c.close();
@@ -188,8 +195,8 @@ public class DB_Functions
         {
             try
             {
-                if(stmt != null)
-                    stmt.close();
+                if(pstmt != null)
+                    pstmt.close();
             }
             catch (Exception e)
             {
