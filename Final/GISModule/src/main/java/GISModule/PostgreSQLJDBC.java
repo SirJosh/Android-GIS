@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
+ * @author  GIS - Team Longsword
+ * Joshua Moodley - 14152152
+ * Boikanyo Modiko - 15227678
+ * Mfana Masimula - 12077713
+ * Bongani Tshela - 14134790
+ *
  * Main class for testing our Database functions
  */
 public class PostgreSQLJDBC
@@ -31,7 +37,7 @@ public class PostgreSQLJDBC
 
             // GET ROUTE
             //getRoutes();
-            
+
             // REMOVE FUNCTIONS
             //removeFunctions();
 

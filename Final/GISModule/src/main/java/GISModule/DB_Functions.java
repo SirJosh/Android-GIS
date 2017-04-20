@@ -16,6 +16,11 @@ import java.sql.*;
  * Gson is used for all our JSON conversions, check pom.xml for maven dependencies.
  *
  * @author  GIS - Team Longsword
+ * Joshua Moodley - 14152152
+ * Boikanyo Modiko - 15227678
+ * Mfana Masimula - 12077713
+ * Bongani Tshela - 14134790
+ *
  * @version 6.0
  * @since   3.0 : 11-04-2017
  * @since   4.0 : 16-04-2017

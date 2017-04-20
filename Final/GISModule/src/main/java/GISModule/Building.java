@@ -11,6 +11,13 @@ import java.util.Vector;
  *
  * The HashMap acts as a wrapper so the user does not interact with the database directly.
  *
+ * @author  GIS - Team Longsword
+ * Joshua Moodley - 14152152
+ * Boikanyo Modiko - 15227678
+ * Mfana Masimula - 12077713
+ * Bongani Tshela - 14134790
+ *
+ *
  * Accepted building Names in JSON string for name key:
  * IT Building,
  * EMB Building,

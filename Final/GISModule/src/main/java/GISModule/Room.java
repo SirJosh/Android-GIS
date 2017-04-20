@@ -11,6 +11,12 @@ import java.util.Vector;
  * The build_id is a FK to our buildings tables which holds all of the buildings on campus. The room tables e.g. IT_building
  * hold the rooms to that building. This is how we link the rooms to the building.
  *
+ * @author  GIS - Team Longsword
+ * Joshua Moodley - 14152152
+ * Boikanyo Modiko - 15227678
+ * Mfana Masimula - 12077713
+ * Bongani Tshela - 14134790
+ *
  * Accepted Room names in JSON string for roomName key:
  * IT 2-23,
  * IT 2-24,
