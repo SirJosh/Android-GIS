@@ -1,0 +1,41 @@
+{
+  "name": "broadsword-gis-api",
+  "version": "0.0.0",
+  "description": "GIS API for Team Broadsword",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run start:debug",
+    "start:debug": "cross-env DEBUG=broadsword-gis-api* nodemon",
+    "test": "mocha test/*/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Broadsword-GIS-Org/SE_BroadSword-GIS"
+  },
+  "keywords": [
+    "Express.js"
+  ],
+  "author": "Team Broadsword-GIS",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "config": "^1.25.1",
+    "cross-env": "^3.2.4",
+    "debug": "^2.6.3",
+    "express": "4.15.2",
+    "lodash": "^4.17.4",
+    "mongo": "^0.1.0",
+    "mongoose": "^4.9.1",
+    "node-astar": "^0.1.0",
+    "nodemon": "^1.11.0",
+    "parse-json": "^2.2.0",
+    "needle": "^1.6.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^3.2.0",
+    "node-mocks-http": "^1.6.1",
+    "should": "^11.2.1",
+    "supertest": "^3.0.0"
+  }
+}
