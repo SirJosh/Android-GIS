@@ -16,6 +16,7 @@
 \usepackage{tabu}
 \usepackage{amssymb}% http://ctan.org/pkg/amssymb
 \usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage[font=small,labelfont=bf]{caption}
 
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
@@ -46,7 +47,7 @@ includefoot
 	%Title Page
 	\begin{titlepage}
 		\begin{center}
-			\includegraphics[width=10cm]{UP.jpg}  \\
+			\includegraphics[width=10cm]{fig/UP.jpg}  \\
 			[1cm]
 			\line(1,0){300} \\
 			[0.3cm]
@@ -151,8 +152,24 @@ well as venues such as offices, lecture halls, labs, etc.
 	\hline
 	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
 	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
+		\cmark &  8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The retrieve all locations request returns all the location's stored within the \\ database on campus. The request works when new locations are added. Thus \\ showing that the database performs the request correctly. This also holds true \\ when you call this function multiple times sequentially. \\ \\ Overall the function performs what it is defined to do, without causing  strain on \\the database.\end{tabular}} \\ \hline
 \end{tabular}
+
+\begin{center}
+\begin{minipage}{0.48\linewidth}
+	\includegraphics[width=\linewidth]{fig/allLocationCode.png}
+	\captionof{figure}{Test code for display all locations}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\linewidth}
+	\includegraphics[width=\linewidth]{fig/allLocationResult.png}
+	\captionof{figure}{JSON string returned}
+\end{minipage}
+\begin{minipage}{0.40\linewidth}
+	\includegraphics[width=\linewidth]{fig/allLocationTerm.png}
+	\captionof{figure}{Result after test is run: status code 200}
+\end{minipage}
+\end{center}
 
 
 \subsubsection{Get all buildings}
@@ -160,8 +177,27 @@ well as venues such as offices, lecture halls, labs, etc.
 	\hline
 	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
 	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
+		\cmark &  8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}After testing the getBuildingNames request it retrieves all the buildings that are \\ on campus. The request also works when new buildings are added. Thus showing \\ that the database handles the request correctly. This also holds true when you call \\ this function multiple times sequentially. \\ \\ Overall the function performs what it needs to do, without causing the database to  \\ crash or hang.\end{tabular}} \\ \hline
+	
 \end{tabular}
+
+\begin{center}
+	\begin{minipage}{0.48\linewidth}
+		\includegraphics[width=\linewidth]{fig/buildingSearch.png}
+		\captionof{figure}{Test code for display all function}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=\linewidth]{fig/ReqBuildAll.png}
+		\captionof{figure}{Result after test is run: status code 200}
+	\end{minipage}
+	\begin{minipage}{1.0\linewidth}
+		\includegraphics[width=\linewidth]{fig/buildalldata.png}
+		\captionof{figure}{JSON string returned}
+	\end{minipage}
+\end{center}
+
+
 
 
 \subsubsection{Get location by building name}
