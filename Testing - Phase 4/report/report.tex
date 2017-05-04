@@ -122,9 +122,20 @@ well as venues such as offices, lecture halls, labs, etc.
 	\hline
 	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
 	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
+	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}} The function works well when given the correct parameters for \\single object insert and fails for batch inserts (tested in the code above).\\ \end{tabular}} \\ \hline
+\end{tabular} \\ \\
+\begin{center}
+	\begin{minipage}{0.48\linewidth}
+		\includegraphics[width=\linewidth]{test1.jpeg}
+		\captionof{figure}{Test code for add location function}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=\linewidth]{pass1.jpeg}
+		\captionof{figure}{Result after test is run: status code 200}
+	\end{minipage}
+\end{center}
+\pagebreak
 \subsection{Remove Functionality}
 \subsubsection{Remove location}
 
@@ -132,9 +143,20 @@ well as venues such as offices, lecture halls, labs, etc.
 	\hline
 	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
 	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
+	\cmark  &   10  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The remove function works well when given the correct parameters \\ It will get the exact location that we want to remove, using both the \\building details and the coordinates\end{tabular}} \\ \hline
+\end{tabular} \\ \\
+\begin{center}
+	\begin{minipage}{0.48\linewidth}
+		\includegraphics[width=\linewidth]{test2.jpeg}
+		\captionof{figure}{Test code for remove location function}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=\linewidth]{pass2.jpeg}
+		\captionof{figure}{Result after test is run: status code 200}
+	\end{minipage}
+\end{center}
+\pagebreak
 \subsection{Update Functionality}
 \subsubsection{Update location}
 
@@ -142,8 +164,19 @@ well as venues such as offices, lecture halls, labs, etc.
 	\hline
 	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
 	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
+	\cmark  &   7  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The update function works correctly given the correct parameters.\\ The concern is that it might not get the right or the only location \\given only the room and the building \\ (as opposed to room, building and the coordinates).\end{tabular}} \\ \hline
 \end{tabular}
+\begin{center}
+	\begin{minipage}{0.48\linewidth}
+		\includegraphics[width=\linewidth]{test3.jpeg}
+		\captionof{figure}{Test code for update function}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=\linewidth]{pass3.jpeg}
+		\captionof{figure}{Result after test is run: status code 200}
+	\end{minipage}
+\end{center}
 
 \pagebreak
 \subsection{Request Functionality}
