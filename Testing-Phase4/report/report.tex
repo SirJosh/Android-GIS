@@ -1,7 +1,8 @@
+
 \documentclass[runningheads,a4paper]{article}
 
 \usepackage[utf8]{inputenc}
- 
+
 \setcounter{tocdepth}{3}
 
 \usepackage[english]{babel} 
@@ -20,7 +21,7 @@
 
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
- 
+
 \usepackage{titling}
 \usepackage[hidelinks]{hyperref}
 \setcounter{secnumdepth}{5}
@@ -41,9 +42,9 @@ includefoot
 \fancyfoot[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
- \setlength\parindent{24pt}
+\setlength\parindent{24pt}
 \begin{document}
-
+	
 	%Title Page
 	\begin{titlepage}
 		\begin{center}
@@ -54,7 +55,7 @@ includefoot
 			\textsc{\Large
 				NavUP\\
 				Testing Report\\
-			\hfill
+				\hfill
 				%University of Pretoria
 			}\\
 			[0.1cm]
@@ -68,25 +69,25 @@ includefoot
 		\begin{center}
 			\begin{multicols}{2}
 				\textsc{\large\\
-				Mfana Masimula\\ 
+					Mfana Masimula\\ 
 					12077713\\ 
 				}
 				
 				\textsc{\large\\
-				Joshua Moodley\\
-					 14152152\\ 
+					Joshua Moodley\\
+					14152152\\ 
 				}
 				
-			\textsc{\large\\
-				Bongani Tshela\\ 
-				14134790\\ 
-			}
-			
-			\textsc{\large\\
-				Boikanyo Modiko\\
-				15227678\\ 
-			}
-		
+				\textsc{\large\\
+					Bongani Tshela\\ 
+					14134790\\ 
+				}
+				
+				\textsc{\large\\
+					Boikanyo Modiko\\
+					15227678\\ 
+				}
+				
 			\end{multicols}
 			
 			
@@ -94,159 +95,196 @@ includefoot
 				\url{https://github.com/SirJosh/Android-GIS.git}}
 		\end{center}
 	\end{titlepage}
-%\maketitle
-
-\begingroup
-
-\tableofcontents
-\addcontentsline{toc}{section}{Table Of Contents}
-\endgroup
-\newpage
-
-\section{Introduction}
-
-\subsection{Scope}
-Services to gather, maintain, persist and provide information related to the world
-serviced by the system. It is about the creation and maintenance of a GIS Map of the
-campus by using WiFi signal strengths and other available sources of GIS
-information.
-This module provide services to search for locations such as landmarks, buildings as
-well as venues such as offices, lecture halls, labs, etc.
- 
-\section{Functional Requirements}
-\subsection{Create Functionality}
-\subsubsection{Add a location}
-
-\label{my-label}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsection{Remove Functionality}
-\subsubsection{Remove location}
-
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsection{Update Functionality}
-\subsubsection{Update location}
-
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\pagebreak
-\subsection{Request Functionality}
-\subsubsection{Get all locations}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-		\cmark &  8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The retrieve all locations request returns all the location's stored within the \\ database on campus. The request works when new locations are added. Thus \\ showing that the database performs the request correctly. This also holds true \\ when you call this function multiple times sequentially. \\ \\ Overall the function performs what it is defined to do, without causing  strain on \\the database.\end{tabular}} \\ \hline
-\end{tabular}
-
-\begin{center}
-\begin{minipage}{0.48\linewidth}
-	\includegraphics[width=\linewidth]{fig/allLocationCode.png}
-	\captionof{figure}{Test code for display all locations}
-\end{minipage}
-\hfill
-\begin{minipage}{0.49\linewidth}
-	\includegraphics[width=\linewidth]{fig/allLocationResult.png}
-	\captionof{figure}{JSON string returned}
-\end{minipage}
-\begin{minipage}{0.40\linewidth}
-	\includegraphics[width=\linewidth]{fig/allLocationTerm.png}
-	\captionof{figure}{Result after test is run: status code 200}
-\end{minipage}
-\end{center}
-
-
-\subsubsection{Get all buildings}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-		\cmark &  8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}After testing the getBuildingNames request it retrieves all the buildings that are \\ on campus. The request also works when new buildings are added. Thus showing \\ that the database handles the request correctly. This also holds true when you call \\ this function multiple times sequentially. \\ \\ Overall the function performs what it needs to do, without causing the database to  \\ crash or hang.\end{tabular}} \\ \hline
+	%\maketitle
 	
-\end{tabular}
-
-\begin{center}
-	\begin{minipage}{0.48\linewidth}
-		\includegraphics[width=\linewidth]{fig/buildingSearch.png}
-		\captionof{figure}{Test code for display all function}
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.49\linewidth}
-		\includegraphics[width=\linewidth]{fig/ReqBuildAll.png}
-		\captionof{figure}{Result after test is run: status code 200}
-	\end{minipage}
-	\begin{minipage}{1.0\linewidth}
-		\includegraphics[width=\linewidth]{fig/buildalldata.png}
-		\captionof{figure}{JSON string returned}
-	\end{minipage}
-\end{center}
-
-
-
-
-\subsubsection{Get location by building name}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsubsection{Get route}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\section{Non-Functional Requirements Tested}
-\subsection{Reliability}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsection{Availability}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsection{Scalability}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
-\subsection{Recoverability}
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
-	\hline
-	\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
-\end{tabular}
-
+	\begingroup
+	
+	\tableofcontents
+	\addcontentsline{toc}{section}{Table Of Contents}
+	\endgroup
+	\newpage
+	
+	\section{Introduction}
+	
+	\subsection{Scope}
+	Services to gather, maintain, persist and provide information related to the world
+	serviced by the system. It is about the creation and maintenance of a GIS Map of the
+	campus by using WiFi signal strengths and other available sources of GIS
+	information.
+	This module provide services to search for locations such as landmarks, buildings as
+	well as venues such as offices, lecture halls, labs, etc.
+	
+	\section{Functional Requirements}
+	\subsection{Create Functionality}
+	\subsubsection{Add a location}
+	
+	\label{my-label}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}} The function works well when given the correct parameters for \\single object insert and fails for batch inserts (tested in the code above).\\ \end{tabular}} \\ \hline
+	\end{tabular} \\ \\
+	\begin{center}
+		\begin{minipage}{0.48\linewidth}
+			\includegraphics[width=\linewidth]{fig/test1.jpeg}
+			\captionof{figure}{Test code for add location function}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=\linewidth]{fig/pass1.jpeg}
+			\captionof{figure}{Result after test is run: status code 200}
+		\end{minipage}
+	\end{center}
+	\pagebreak
+	\subsection{Remove Functionality}
+	\subsubsection{Remove location}
+	
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   10  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The remove function works well when given the correct parameters \\ It will get the exact location that we want to remove, using both the \\building details and the coordinates\end{tabular}} \\ \hline
+	\end{tabular} \\ \\
+	\begin{center}
+		\begin{minipage}{0.48\linewidth}
+			\includegraphics[width=\linewidth]{fig/test2.jpeg}
+			\captionof{figure}{Test code for remove location function}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=\linewidth]{fig/pass2.jpeg}
+			\captionof{figure}{Result after test is run: status code 200}
+		\end{minipage}
+	\end{center}
+	\pagebreak
+	\subsection{Update Functionality}
+	\subsubsection{Update location}
+	
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   7  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The update function works correctly given the correct parameters.\\ The concern is that it might not get the right or the only location \\given only the room and the building \\ (as opposed to room, building and the coordinates).\end{tabular}} \\ \hline
+	\end{tabular}
+	\begin{center}
+		\begin{minipage}{0.48\linewidth}
+			\includegraphics[width=\linewidth]{fig/test3.jpeg}
+			\captionof{figure}{Test code for update function}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=\linewidth]{fig/pass3.jpeg}
+			\captionof{figure}{Result after test is run: status code 200}
+		\end{minipage}
+	\end{center}
+	
+	\pagebreak
+	\subsection{Request Functionality}
+	\subsubsection{Get all locations}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark &  10  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The retrieve all locations request returns all the location's stored within the \\ database on campus. The request works when new locations are added. Thus \\ showing that the database performs the request correctly. This also holds true \\ when you call this function multiple times sequentially. \\ \\ Overall the function performs what it is defined to do, without causing  strain on \\the database.\end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\begin{center}
+		\begin{minipage}{0.48\linewidth}
+			\includegraphics[width=\linewidth]{fig/allLocationCode.png}
+			\captionof{figure}{Test code for display all locations}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=\linewidth]{fig/allLocationResult.png}
+			\captionof{figure}{JSON string returned}
+		\end{minipage}
+		\begin{minipage}{0.40\linewidth}
+			\includegraphics[width=\linewidth]{fig/allLocationTerm.png}
+			\captionof{figure}{Result after test is run: status code 200}
+		\end{minipage}
+	\end{center}
+	
+	
+	\subsubsection{Get all buildings}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark &  9  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}After testing the getBuildingNames request it retrieves all the buildings that are \\ on campus. The request also works when new buildings are added. Thus showing \\ that the database handles the request correctly. This also holds true when you call \\ this function multiple times sequentially. \\ \\ Overall the function performs what it needs to do, without causing the database to  \\ crash or hang.\end{tabular}} \\ \hline
+		
+	\end{tabular}
+	
+	\begin{center}
+		\begin{minipage}{0.48\linewidth}
+			\includegraphics[width=\linewidth]{fig/buildingSearch.png}
+			\captionof{figure}{Test code for display all function}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\includegraphics[width=\linewidth]{fig/ReqBuildAll.png}
+			\captionof{figure}{Result after test is run: status code 200}
+		\end{minipage}
+		\begin{minipage}{1.0\linewidth}
+			\includegraphics[width=\linewidth]{fig/buildalldata.png}
+			\captionof{figure}{JSON string returned}
+		\end{minipage}
+	\end{center}
+	
+	
+	
+	
+	\subsubsection{Get location by building name}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &  0 & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\subsubsection{Get route}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   0  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf\end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\section{Non-Functional Requirements Tested}
+	\subsection{Reliability}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   8  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The database successfully supports all CRUD operations. It is very \\consistent and works smoothly.\end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\subsection{Availability}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   10  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The GIS subsystem is always available and downtime was never     
+				\\experienced during testing. \end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\subsection{Scalability}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   9  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}The system is fairly scalable and can handle multiple interactions
+				\\without actually slowing down\end{tabular}} \\ \hline
+	\end{tabular}
+	
+	\subsection{Recoverability}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Pass/Fail} & \textbf{Mark (10)} & \multicolumn{2}{l|}{\textbf{Reason}}                                                                                                                                                              \\ 
+		\hline
+		\cmark  &   0  & \multicolumn{2}{l|}{\begin{tabular}[c]{@{}l@{}}this is some text that is a lot of text can you -lease wraparound \\ so it omdfshjvafkdghjvnadhjkvbknadf\\vjh,kandfb vadfbadfbsf \end{tabular}} \\ \hline
+	\end{tabular}
+	
 \end{document}
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc. Terms Privacy Security Status Help
