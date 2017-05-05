@@ -5,9 +5,9 @@ var should = require('should');
 var needle 		= require('needle');
 
 describe('Retrieve Locations by building name function: ', function() {
-  it('Should retreive all Locations in building=IT: ', function(done)
+  it('Should retreive all Locations in building=EMB: ', function(done)
   {
-	var building = "IT";
+	var building = "EMB";
 	
 	needle.get('localhost:3000/locations/getByBuildingName/'+building, function(err, res)
 	{
@@ -24,4 +24,3 @@ describe('Retrieve Locations by building name function: ', function() {
 	
   });
 });
-
